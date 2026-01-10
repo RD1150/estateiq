@@ -1,9 +1,10 @@
 """
 EstateIQ - Enhanced Real Estate AI Platform with ChatGPT-style capabilities
 Combines property search, market analytics, and intelligent conversation
+Updated to serve frontend from root directory for Render deployment
 """
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import sqlite3
 import json
@@ -18,11 +19,12 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__, static_folder='../frontend/dist', static_url_path='')
+# Initialize Flask app - serve static files from root directory
+app = Flask(__name__)
 CORS(app, origins="*")
 
 # OpenAI configuration for ChatGPT-style AI
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = os.getenv('OPENAI_API_KEY', 'your-key-here')
 openai.api_base = os.getenv('OPENAI_API_BASE', 'https://api.openai.com/v1')
 
 # Database initialization
@@ -275,20 +277,24 @@ class EstateIQAgent:
             
         except Exception as e:
             logger.error(f"Error generating AI response: {str(e)}")
-            return "I apologize, but I'm having trouble processing your request right now. Could you please try rephrasing your question about real estate?"
+            return f"I'm having trouble processing that right now. Could you rephrase your question? (Error: {str(e)})"
 
 # Initialize AI agent
-ai_agent = EstateIQAgent()
+agent = EstateIQAgent()
 
-# API Routes
+# ===== ROUTES =====
+
 @app.route('/')
 def serve_frontend():
-    """Serve the React frontend"""
-    return send_from_directory(app.static_folder, 'index.html')
+    """Serve the frontend index.html"""
+    try:
+        return send_file('index.html')
+    except:
+        return jsonify({"message": "EstateIQ API is running. Frontend not found."}), 200
 
 @app.route('/api/properties')
 def get_properties():
-    """Get properties with optional filtering"""
+    """Get all properties with optional filtering"""
     try:
         conn = sqlite3.connect('estateiq.db')
         cursor = conn.cursor()
@@ -298,9 +304,8 @@ def get_properties():
         max_price = request.args.get('max_price', type=float)
         bedrooms = request.args.get('bedrooms', type=int)
         city = request.args.get('city')
-        property_type = request.args.get('property_type')
         
-        # Build dynamic query
+        # Build query
         query = "SELECT * FROM properties WHERE 1=1"
         params = []
         
@@ -316,151 +321,114 @@ def get_properties():
         if city:
             query += " AND city LIKE ?"
             params.append(f"%{city}%")
-        if property_type:
-            query += " AND property_type = ?"
-            params.append(property_type)
-        
-        query += " ORDER BY ai_score DESC LIMIT 20"
         
         cursor.execute(query, params)
         properties = cursor.fetchall()
-        
-        # Convert to list of dictionaries
-        columns = [description[0] for description in cursor.description]
-        properties_list = [dict(zip(columns, row)) for row in properties]
-        
         conn.close()
         
-        return jsonify({
-            'success': True,
-            'properties': properties_list,
-            'count': len(properties_list)
-        })
+        # Convert to dict
+        columns = [
+            'id', 'address', 'city', 'state', 'zip_code', 'price', 'bedrooms', 
+            'bathrooms', 'square_feet', 'property_type', 'listing_date', 
+            'days_on_market', 'ai_score', 'trend', 'description', 'amenities',
+            'neighborhood_score', 'walkability_score', 'school_rating', 
+            'crime_rating', 'investment_potential', 'rental_estimate', 'cap_rate',
+            'created_at'
+        ]
+        
+        result = []
+        for prop in properties:
+            result.append(dict(zip(columns, prop)))
+        
+        return jsonify(result)
         
     except Exception as e:
         logger.error(f"Error fetching properties: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/chat', methods=['POST'])
-def chat_with_ai():
-    """Enhanced chat endpoint with ChatGPT-style capabilities"""
+def chat():
+    """Enhanced ChatGPT-style AI chat endpoint"""
     try:
-        data = request.get_json()
+        data = request.json
         user_message = data.get('message', '')
         session_id = data.get('session_id', 'default')
         
         if not user_message:
-            return jsonify({'success': False, 'error': 'Message is required'}), 400
+            return jsonify({"error": "Message is required"}), 400
         
         # Generate AI response
-        ai_response = ai_agent.generate_response(session_id, user_message)
+        ai_response = agent.generate_response(session_id, user_message)
         
         return jsonify({
-            'success': True,
-            'response': ai_response,
-            'session_id': session_id,
-            'timestamp': datetime.now().isoformat()
+            "response": ai_response,
+            "session_id": session_id
         })
         
     except Exception as e:
         logger.error(f"Error in chat endpoint: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/market-analytics')
-def get_market_analytics():
-    """Get market analytics and trends"""
+@app.route('/api/analytics')
+def get_analytics():
+    """Get market analytics and insights"""
     try:
         conn = sqlite3.connect('estateiq.db')
         cursor = conn.cursor()
         
-        # Calculate market statistics
+        # Get aggregate statistics
         cursor.execute('''
             SELECT 
                 AVG(price) as avg_price,
                 COUNT(*) as total_properties,
                 AVG(ai_score) as avg_ai_score,
-                AVG(days_on_market) as avg_days_on_market,
-                COUNT(CASE WHEN trend = 'Rising' THEN 1 END) as rising_properties,
-                COUNT(CASE WHEN trend = 'Stable' THEN 1 END) as stable_properties,
-                COUNT(CASE WHEN trend = 'Declining' THEN 1 END) as declining_properties
+                SUM(CASE WHEN trend = 'Rising' THEN 1 ELSE 0 END) as rising_count,
+                SUM(CASE WHEN trend = 'Stable' THEN 1 ELSE 0 END) as stable_count,
+                SUM(CASE WHEN trend = 'Declining' THEN 1 ELSE 0 END) as declining_count
             FROM properties
         ''')
         
         stats = cursor.fetchone()
         
-        # Get price distribution by city
+        # Get city breakdown
         cursor.execute('''
-            SELECT city, AVG(price) as avg_price, COUNT(*) as count
+            SELECT city, COUNT(*) as count, AVG(price) as avg_price, AVG(ai_score) as avg_score
             FROM properties
             GROUP BY city
-            ORDER BY avg_price DESC
         ''')
         
-        city_data = cursor.fetchall()
-        
+        cities = cursor.fetchall()
         conn.close()
         
-        analytics = {
-            'market_overview': {
-                'average_price': round(stats[0] or 0, 2),
-                'total_properties': stats[1] or 0,
-                'average_ai_score': round(stats[2] or 0, 1),
-                'average_days_on_market': round(stats[3] or 0, 1),
-                'market_sentiment': {
-                    'rising': stats[4] or 0,
-                    'stable': stats[5] or 0,
-                    'declining': stats[6] or 0
+        return jsonify({
+            "overview": {
+                "average_price": round(stats[0], 2) if stats[0] else 0,
+                "total_properties": stats[1],
+                "average_ai_score": round(stats[2], 1) if stats[2] else 0,
+                "market_sentiment": {
+                    "rising": stats[3],
+                    "stable": stats[4],
+                    "declining": stats[5]
                 }
             },
-            'city_analysis': [
+            "cities": [
                 {
-                    'city': row[0],
-                    'average_price': round(row[1], 2),
-                    'property_count': row[2]
+                    "city": city[0],
+                    "property_count": city[1],
+                    "average_price": round(city[2], 2),
+                    "average_score": round(city[3], 1)
                 }
-                for row in city_data
+                for city in cities
             ]
-        }
-        
-        return jsonify({
-            'success': True,
-            'analytics': analytics
         })
         
     except Exception as e:
         logger.error(f"Error fetching analytics: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/property/<int:property_id>')
-def get_property_details(property_id):
-    """Get detailed information about a specific property"""
-    try:
-        conn = sqlite3.connect('estateiq.db')
-        cursor = conn.cursor()
-        
-        cursor.execute("SELECT * FROM properties WHERE id = ?", (property_id,))
-        property_data = cursor.fetchone()
-        
-        if not property_data:
-            return jsonify({'success': False, 'error': 'Property not found'}), 404
-        
-        columns = [description[0] for description in cursor.description]
-        property_dict = dict(zip(columns, property_data))
-        
-        conn.close()
-        
-        return jsonify({
-            'success': True,
-            'property': property_dict
-        })
-        
-    except Exception as e:
-        logger.error(f"Error fetching property details: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-# Initialize database and populate with sample data
+# Sample data population
 def populate_sample_data():
-    """Populate database with enhanced sample properties"""
+    """Populate database with sample Austin properties"""
     conn = sqlite3.connect('estateiq.db')
     cursor = conn.cursor()
     
@@ -468,6 +436,7 @@ def populate_sample_data():
     cursor.execute("SELECT COUNT(*) FROM properties")
     if cursor.fetchone()[0] > 0:
         conn.close()
+        logger.info("Sample data already exists")
         return
     
     sample_properties = [
@@ -478,121 +447,121 @@ def populate_sample_data():
             'zip_code': '78701',
             'price': 650000,
             'bedrooms': 3,
-            'bathrooms': 2.5,
+            'bathrooms': 2.0,
             'square_feet': 1850,
             'property_type': 'Single Family',
-            'listing_date': '2024-07-15',
+            'listing_date': '2024-06-15',
             'days_on_market': 15,
             'ai_score': 8.5,
             'trend': 'Rising',
-            'description': 'Beautiful modern home in prime Austin location with updated kitchen and spacious backyard.',
-            'amenities': 'Updated kitchen, hardwood floors, large backyard, garage',
+            'description': 'Beautiful modern home in downtown Austin with updated kitchen and spacious backyard.',
+            'amenities': 'Granite countertops, hardwood floors, 2-car garage, smart home features',
             'neighborhood_score': 9.2,
             'walkability_score': 85,
-            'school_rating': 8.5,
+            'school_rating': 9.0,
             'crime_rating': 'Low',
             'investment_potential': 'Excellent',
             'rental_estimate': 3200,
             'cap_rate': 5.9
         },
         {
-            'address': '789 Maple Drive',
+            'address': '456 Elm Avenue',
             'city': 'Austin',
             'state': 'TX',
-            'zip_code': '78704',
+            'zip_code': '78702',
+            'price': 485000,
+            'bedrooms': 2,
+            'bathrooms': 2.0,
+            'square_feet': 1200,
+            'property_type': 'Condo',
+            'listing_date': '2024-06-20',
+            'days_on_market': 8,
+            'ai_score': 7.8,
+            'trend': 'Stable',
+            'description': 'Luxury condo in trendy East Austin with rooftop pool and fitness center.',
+            'amenities': 'Pool, gym, concierge, parking, modern appliances',
+            'neighborhood_score': 8.5,
+            'walkability_score': 92,
+            'school_rating': 8.5,
+            'crime_rating': 'Low',
+            'investment_potential': 'Very Good',
+            'rental_estimate': 2800,
+            'cap_rate': 6.9
+        },
+        {
+            'address': '789 Maple Drive',
+            'city': 'Cedar Park',
+            'state': 'TX',
+            'zip_code': '78613',
             'price': 950000,
             'bedrooms': 4,
             'bathrooms': 3.5,
             'square_feet': 2800,
             'property_type': 'Single Family',
-            'listing_date': '2024-06-20',
+            'listing_date': '2024-05-10',
             'days_on_market': 45,
             'ai_score': 8.2,
-            'trend': 'Stable',
-            'description': 'Luxury home with pool and premium finishes in desirable South Austin neighborhood.',
-            'amenities': 'Swimming pool, granite countertops, master suite, 3-car garage',
+            'trend': 'Rising',
+            'description': 'Stunning executive home with pool, game room, and premium finishes throughout.',
+            'amenities': 'Pool, game room, office, 3-car garage, chef kitchen',
             'neighborhood_score': 8.8,
-            'walkability_score': 78,
-            'school_rating': 9.0,
+            'walkability_score': 55,
+            'school_rating': 9.5,
             'crime_rating': 'Very Low',
-            'investment_potential': 'Good',
+            'investment_potential': 'Excellent',
             'rental_estimate': 4500,
             'cap_rate': 5.7
         },
         {
-            'address': '456 Pine Avenue',
-            'city': 'Austin',
-            'state': 'TX',
-            'zip_code': '78702',
-            'price': 425000,
-            'bedrooms': 2,
-            'bathrooms': 2.0,
-            'square_feet': 1200,
-            'property_type': 'Condo',
-            'listing_date': '2024-07-01',
-            'days_on_market': 30,
-            'ai_score': 7.8,
-            'trend': 'Rising',
-            'description': 'Modern downtown condo with city views and premium amenities.',
-            'amenities': 'City views, fitness center, rooftop deck, concierge',
-            'neighborhood_score': 9.5,
-            'walkability_score': 95,
-            'school_rating': 7.5,
-            'crime_rating': 'Moderate',
-            'investment_potential': 'Very Good',
-            'rental_estimate': 2800,
-            'cap_rate': 7.9
-        },
-        {
-            'address': '321 Cedar Lane',
+            'address': '321 Pine Street',
             'city': 'Round Rock',
             'state': 'TX',
             'zip_code': '78664',
-            'price': 485000,
+            'price': 425000,
             'bedrooms': 3,
             'bathrooms': 2.0,
             'square_feet': 1650,
             'property_type': 'Single Family',
-            'listing_date': '2024-06-10',
-            'days_on_market': 55,
-            'ai_score': 7.5,
-            'trend': 'Stable',
-            'description': 'Family-friendly home in excellent school district with large yard.',
-            'amenities': 'Large yard, updated appliances, 2-car garage, patio',
-            'neighborhood_score': 8.5,
-            'walkability_score': 65,
-            'school_rating': 9.5,
-            'crime_rating': 'Very Low',
-            'investment_potential': 'Good',
-            'rental_estimate': 2600,
-            'cap_rate': 6.4
-        },
-        {
-            'address': '987 Elm Street',
-            'city': 'Cedar Park',
-            'state': 'TX',
-            'zip_code': '78613',
-            'price': 575000,
-            'bedrooms': 4,
-            'bathrooms': 3.0,
-            'square_feet': 2200,
-            'property_type': 'Single Family',
-            'listing_date': '2024-07-20',
-            'days_on_market': 10,
+            'listing_date': '2024-06-25',
+            'days_on_market': 5,
             'ai_score': 8.0,
             'trend': 'Rising',
-            'description': 'Spacious family home with open floor plan and modern updates.',
-            'amenities': 'Open floor plan, granite counters, covered patio, storage',
+            'description': 'Move-in ready home in family-friendly neighborhood near top-rated schools.',
+            'amenities': 'Updated kitchen, large yard, covered patio, storage shed',
             'neighborhood_score': 8.2,
-            'walkability_score': 55,
-            'school_rating': 8.8,
+            'walkability_score': 48,
+            'school_rating': 9.2,
             'crime_rating': 'Low',
-            'investment_potential': 'Excellent',
-            'rental_estimate': 3000,
-            'cap_rate': 6.3
+            'investment_potential': 'Very Good',
+            'rental_estimate': 2600,
+            'cap_rate': 7.3
         },
         {
-            'address': '654 Willow Way',
+            'address': '654 Birch Lane',
+            'city': 'Austin',
+            'state': 'TX',
+            'zip_code': '78704',
+            'price': 725000,
+            'bedrooms': 3,
+            'bathrooms': 2.5,
+            'square_feet': 2100,
+            'property_type': 'Townhouse',
+            'listing_date': '2024-06-18',
+            'days_on_market': 12,
+            'ai_score': 7.9,
+            'trend': 'Stable',
+            'description': 'Contemporary townhouse in South Austin with modern design and energy-efficient features.',
+            'amenities': 'Solar panels, EV charger, rooftop deck, smart thermostat',
+            'neighborhood_score': 8.7,
+            'walkability_score': 78,
+            'school_rating': 8.8,
+            'crime_rating': 'Low',
+            'investment_potential': 'Good',
+            'rental_estimate': 3500,
+            'cap_rate': 5.8
+        },
+        {
+            'address': '987 Cedar Court',
             'city': 'Pflugerville',
             'state': 'TX',
             'zip_code': '78660',
@@ -643,5 +612,5 @@ def populate_sample_data():
 if __name__ == '__main__':
     init_db()
     populate_sample_data()
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
