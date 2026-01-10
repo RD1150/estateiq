@@ -14,24 +14,24 @@
         }
 
         :root {
-            --primary-mint: #7dd3c0;
-            --primary-sage: #a8d5ba;
+            --primary-cream: #f5f5dc;
+            --primary-beige: #f8f4e6;
             --accent-gold: #d4af37;
-            --accent-emerald: #50c878;
-            --text-dark: #2c3e50;
-            --text-light: #ecf0f1;
-            --background-light: #f8fffe;
-            --background-dark: #1a2332;
-            --shadow-soft: 0 10px 30px rgba(125, 211, 192, 0.2);
-            --shadow-strong: 0 20px 60px rgba(125, 211, 192, 0.3);
-            --gradient-primary: linear-gradient(135deg, #7dd3c0 0%, #a8d5ba 50%, #50c878 100%);
+            --accent-gold-light: #f4e4bc;
+            --text-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --background-light: #faf8f3;
+            --background-dark: #1a1a1a;
+            --shadow-soft: 0 10px 30px rgba(212, 175, 55, 0.15);
+            --shadow-strong: 0 20px 60px rgba(212, 175, 55, 0.25);
+            --gradient-primary: linear-gradient(135deg, #faf8f3 0%, #f5f5dc 50%, #f8f4e6 100%);
             --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
-            --gradient-dark: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+            --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--gradient-primary);
+            background: var(--background-light);
             color: var(--text-dark);
             line-height: 1.6;
             min-height: 100vh;
@@ -45,9 +45,9 @@
 
         /* Header */
         .header {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--background-dark);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(125, 211, 192, 0.2);
+            border-bottom: 2px solid var(--accent-gold);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -67,28 +67,25 @@
             gap: 12px;
             font-size: 1.8rem;
             font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--primary-cream);
         }
 
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: var(--gradient-primary);
+            background: var(--gradient-gold);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--background-dark);
             font-size: 1.2rem;
             box-shadow: var(--shadow-soft);
         }
 
         .tagline {
             font-size: 0.9rem;
-            color: var(--primary-sage);
+            color: var(--accent-gold);
             font-weight: 500;
             margin-left: 52px;
             margin-top: -5px;
@@ -109,19 +106,19 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            color: var(--text-dark);
+            color: var(--primary-cream);
         }
 
         .nav-tab:hover {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
             transform: translateY(-2px);
             box-shadow: var(--shadow-soft);
         }
 
         .nav-tab.active {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
             box-shadow: var(--shadow-strong);
         }
 
@@ -134,11 +131,12 @@
         .hero-section {
             text-align: center;
             padding: 3rem 0;
-            background: rgba(255, 255, 255, 0.1);
+            background: white;
             backdrop-filter: blur(20px);
             border-radius: 30px;
             margin-bottom: 3rem;
             box-shadow: var(--shadow-strong);
+            border: 2px solid var(--accent-gold);
         }
 
         .hero-title {
@@ -160,7 +158,7 @@
 
         /* Chat Interface */
         .chat-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 2rem;
@@ -169,6 +167,7 @@
             max-height: 600px;
             display: flex;
             flex-direction: column;
+            border: 2px solid var(--accent-gold);
         }
 
         .chat-header {
@@ -177,18 +176,18 @@
             gap: 1rem;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(125, 211, 192, 0.2);
+            border-bottom: 2px solid var(--accent-gold);
         }
 
         .chat-avatar {
             width: 50px;
             height: 50px;
-            background: var(--gradient-primary);
+            background: var(--gradient-gold);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--background-dark);
             font-size: 1.5rem;
             box-shadow: var(--shadow-soft);
         }
@@ -201,7 +200,7 @@
 
         .chat-subtitle {
             font-size: 0.9rem;
-            color: var(--primary-sage);
+            color: var(--accent-gold);
             margin-top: 0.25rem;
         }
 
@@ -239,12 +238,12 @@
         }
 
         .message.ai .message-avatar {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
         }
 
         .message-content {
-            background: rgba(125, 211, 192, 0.1);
+            background: var(--primary-beige);
             padding: 1rem 1.5rem;
             border-radius: 20px;
             max-width: 70%;
@@ -252,14 +251,15 @@
         }
 
         .message.user .message-content {
-            background: var(--gradient-gold);
+            background: var(--background-dark);
             color: white;
             border-radius: 20px 20px 5px 20px;
         }
 
         .message.ai .message-content {
-            background: rgba(125, 211, 192, 0.15);
+            background: var(--primary-beige);
             border-radius: 20px 20px 20px 5px;
+            border: 1px solid var(--accent-gold);
         }
 
         .chat-input-container {
@@ -267,29 +267,29 @@
             gap: 1rem;
             align-items: center;
             padding-top: 1rem;
-            border-top: 2px solid rgba(125, 211, 192, 0.2);
+            border-top: 2px solid var(--accent-gold);
         }
 
         .chat-input {
             flex: 1;
             padding: 1rem 1.5rem;
-            border: 2px solid rgba(125, 211, 192, 0.3);
+            border: 2px solid var(--accent-gold);
             border-radius: 25px;
             font-size: 1rem;
             outline: none;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
+            background: white;
         }
 
         .chat-input:focus {
-            border-color: var(--primary-mint);
-            box-shadow: 0 0 0 3px rgba(125, 211, 192, 0.2);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
         }
 
         .send-button {
             padding: 1rem 2rem;
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
             border: none;
             border-radius: 25px;
             font-weight: 600;
@@ -318,13 +318,13 @@
         }
 
         .property-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 1.5rem;
             box-shadow: var(--shadow-soft);
             transition: all 0.3s ease;
-            border: 1px solid rgba(125, 211, 192, 0.2);
+            border: 2px solid var(--accent-gold);
         }
 
         .property-card:hover {
@@ -349,8 +349,8 @@
         }
 
         .ai-score {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
             padding: 0.5rem 1rem;
             border-radius: 15px;
             font-weight: 700;
@@ -369,7 +369,7 @@
             display: flex;
             gap: 1rem;
             margin-bottom: 1rem;
-            color: var(--primary-sage);
+            color: var(--accent-gold);
             font-weight: 500;
         }
 
@@ -421,8 +421,8 @@
         }
 
         .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
             box-shadow: var(--shadow-soft);
         }
 
@@ -432,14 +432,14 @@
         }
 
         .btn-secondary {
-            background: rgba(125, 211, 192, 0.1);
-            color: var(--primary-mint);
-            border: 2px solid var(--primary-mint);
+            background: white;
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
         }
 
         .btn-secondary:hover {
-            background: var(--primary-mint);
-            color: white;
+            background: var(--accent-gold);
+            color: var(--background-dark);
         }
 
         /* Analytics Dashboard */
@@ -451,12 +451,12 @@
         }
 
         .analytics-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 2rem;
             box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(125, 211, 192, 0.2);
+            border: 2px solid var(--accent-gold);
         }
 
         .analytics-title {
@@ -471,7 +471,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(125, 211, 192, 0.1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .metric:last-child {
@@ -485,7 +485,7 @@
 
         .metric-value {
             font-weight: 700;
-            background: var(--gradient-primary);
+            background: var(--gradient-gold);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -502,8 +502,8 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid rgba(125, 211, 192, 0.3);
-            border-left: 4px solid var(--primary-mint);
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-left: 4px solid var(--accent-gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -553,8 +553,8 @@
 
         /* Welcome message styling */
         .welcome-message {
-            background: rgba(125, 211, 192, 0.1);
-            border-left: 4px solid var(--primary-mint);
+            background: var(--primary-beige);
+            border-left: 4px solid var(--accent-gold);
             padding: 1.5rem;
             border-radius: 15px;
             margin-bottom: 1.5rem;
@@ -566,7 +566,7 @@
         }
 
         .welcome-message p {
-            color: var(--primary-sage);
+            color: var(--accent-gold);
             margin-bottom: 0.5rem;
         }
 
@@ -578,8 +578,8 @@
         }
 
         .quick-action {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
@@ -954,4 +954,5 @@
     </script>
 </body>
 </html>
+
 
