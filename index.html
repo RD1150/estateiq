@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstateIQ - Intelligence Meets Wealth</title>
+    <meta name="description" content="EstateIQ - Your intelligent real estate assistant for building wealth through smart property investments">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-mint: #7dd3c0;
+            --primary-sage: #a8d5ba;
+            --accent-gold: #d4af37;
+            --accent-emerald: #50c878;
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;
+            --background-light: #f8fffe;
+            --background-dark: #1a2332;
+            --shadow-soft: 0 10px 30px rgba(125, 211, 192, 0.2);
+            --shadow-strong: 0 20px 60px rgba(125, 211, 192, 0.3);
+            --gradient-primary: linear-gradient(135deg, #7dd3c0 0%, #a8d5ba 50%, #50c878 100%);
+            --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+            --gradient-dark: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gradient-primary);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(125, 211, 192, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            color: var(--primary-sage);
+            font-weight: 500;
+            margin-left: 52px;
+            margin-top: -5px;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: 2px solid transparent;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+
+        .nav-tab:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-strong);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 120px);
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-strong);
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(125, 211, 192, 0.2);
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .chat-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .chat-subtitle {
+            font-size: 0.9rem;
+            color: var(--primary-sage);
+            margin-top: 0.25rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+            max-height: 400px;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: var(--gradient-gold);
+            color: white;
+        }
+
+        .message.ai .message-avatar {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .message-content {
+            background: rgba(125, 211, 192, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            max-width: 70%;
+            line-height: 1.5;
+        }
+
+        .message.user .message-content {
+            background: var(--gradient-gold);
+            color: white;
+            border-radius: 20px 20px 5px 20px;
+        }
+
+        .message.ai .message-content {
+            background: rgba(125, 211, 192, 0.15);
+            border-radius: 20px 20px 20px 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(125, 211, 192, 0.2);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(125, 211, 192, 0.3);
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-mint);
+            box-shadow: 0 0 0 3px rgba(125, 211, 192, 0.2);
+        }
+
+        .send-button {
+            padding: 1rem 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Properties Grid */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .property-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(125, 211, 192, 0.2);
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .property-price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ai-score {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .property-address {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-details {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--primary-sage);
+            font-weight: 500;
+        }
+
+        .property-description {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .property-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.trend-rising {
+            background: rgba(80, 200, 120, 0.2);
+            color: #50c878;
+        }
+
+        .badge.trend-stable {
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .btn-secondary {
+            background: rgba(125, 211, 192, 0.1);
+            color: var(--primary-mint);
+            border: 2px solid var(--primary-mint);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-mint);
+            color: white;
+        }
+
+        /* Analytics Dashboard */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .analytics-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(125, 211, 192, 0.2);
+        }
+
+        .analytics-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(125, 211, 192, 0.1);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(125, 211, 192, 0.3);
+            border-left: 4px solid var(--primary-mint);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .nav-tabs {
+                gap: 1rem;
+            }
+
+            .nav-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .chat-input-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .chat-input {
+                width: 100%;
+            }
+        }
+
+        /* Hidden class for tab switching */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Welcome message styling */
+        .welcome-message {
+            background: rgba(125, 211, 192, 0.1);
+            border-left: 4px solid var(--primary-mint);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-message h3 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-message p {
+            color: var(--primary-sage);
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .quick-action {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <div class="logo">
+                        <div class="logo-icon">🏠</div>
+                        EstateIQ
+                    </div>
+                    <div class="tagline">Intelligence Meets Wealth</div>
+                </div>
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" data-tab="chat">AI Assistant</button>
+                    <button class="nav-tab" data-tab="properties">Properties</button>
+                    <button class="nav-tab" data-tab="analytics">Analytics</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="hero-section">
+                <h1 class="hero-title">Find Your Perfect Property</h1>
+                <p class="hero-subtitle">AI-powered real estate intelligence for smarter investment decisions</p>
+            </div>
+
+            <!-- AI Chat Tab -->
+            <div id="chat-tab" class="tab-content">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-avatar">🤖</div>
+                        <div>
+                            <div class="chat-title">EstateIQ Assistant</div>
+                            <div class="chat-subtitle">Your intelligent real estate advisor</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="welcome-message">
+                            <h3>Welcome to EstateIQ! 🏠✨</h3>
+                            <p>I'm your intelligent real estate assistant, here to help you make smart property decisions and build wealth through real estate.</p>
+                            <p><strong>I can help you with:</strong></p>
+                            <ul style="margin-left: 1rem; color: var(--text-dark);">
+                                <li>Finding properties that match your criteria</li>
+                                <li>Analyzing investment potential and ROI</li>
+                                <li>Understanding market trends and neighborhoods</li>
+                                <li>Calculating mortgage payments and cash flow</li>
+                                <li>Answering any real estate questions you have</li>
+                            </ul>
+                            <div class="quick-actions">
+                                <button class="quick-action" onclick="sendQuickMessage('Show me properties under $500k')">Properties under $500k</button>
+                                <button class="quick-action" onclick="sendQuickMessage('What makes a good investment property?')">Investment advice</button>
+                                <button class="quick-action" onclick="sendQuickMessage('Analyze the Austin market')">Market analysis</button>
+                                <button class="quick-action" onclick="sendQuickMessage('Help me calculate ROI')">ROI calculator</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Ask me anything about real estate..." onkeypress="handleKeyPress(event)">
+                        <button id="send-button" class="send-button" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Tab -->
+            <div id="properties-tab" class="tab-content hidden">
+                <div class="properties-grid" id="properties-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content hidden">
+                <div class="analytics-grid" id="analytics-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let sessionId = 'session_' + Date.now();
+        let currentTab = 'chat';
+
+        // API Base URL
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '';
+
+        // Tab switching functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                switchTab(tabName);
+            });
+        });
+
+        function switchTab(tabName) {
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Show selected tab content
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            currentTab = tabName;
+
+            // Load data for the tab
+            if (tabName === 'properties') {
+                loadProperties();
+            } else if (tabName === 'analytics') {
+                loadAnalytics();
+            }
+        }
+
+        // Chat functionality
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendQuickMessage(message) {
+            document.getElementById('chat-input').value = message;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            const sendButton = document.getElementById('send-button');
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        session_id: sessionId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    addMessage(data.response, 'ai');
+                } else {
+                    addMessage('I apologize, but I encountered an error. Please try again.', 'ai');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                addMessage('I\'m having trouble connecting right now. Please check your connection and try again.', 'ai');
+            }
+
+            sendButton.disabled = false;
+            sendButton.textContent = 'Send';
+        }
+
+        function addMessage(content, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = sender === 'user' ? '👤' : '🤖';
+
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            messagesContainer.appendChild(messageDiv);
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Properties functionality
+        async function loadProperties() {
+            const grid = document.getElementById('properties-grid');
+            grid.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/properties`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayProperties(data.properties);
+                } else {
+                    grid.innerHTML = '<p>Error loading properties. Please try again.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                grid.innerHTML = '<p>Error loading properties. Please check your connection.</p>';
+            }
+        }
+
+        function displayProperties(properties) {
+            const grid = document.getElementById('properties-grid');
+            
+            if (properties.length === 0) {
+                grid.innerHTML = '<p>No properties found.</p>';
+                return;
+            }
+
+            grid.innerHTML = properties.map(property => `
+                <div class="property-card">
+                    <div class="property-header">
+                        <div class="property-price">$${property.price.toLocaleString()}</div>
+                        <div class="ai-score">⭐ ${property.ai_score}/10</div>
+                    </div>
+                    <div class="property-address">${property.address}</div>
+                    <div class="property-details">
+                        <span>🛏️ ${property.bedrooms} bed</span>
+                        <span>🚿 ${property.bathrooms} bath</span>
+                        <span>📐 ${property.square_feet?.toLocaleString()} sqft</span>
+                    </div>
+                    <div class="property-description">${property.description}</div>
+                    <div class="property-badges">
+                        <span class="badge trend-${property.trend?.toLowerCase()}">${property.trend}</span>
+                        <span class="badge">${property.days_on_market} days on market</span>
+                    </div>
+                    <div class="property-actions">
+                        <button class="btn btn-primary" onclick="askAboutProperty('${property.address}')">Ask AI</button>
+                        <button class="btn btn-secondary" onclick="viewDetails(${property.id})">Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function askAboutProperty(address) {
+            switchTab('chat');
+            const message = `Tell me more about the property at ${address}`;
+            document.getElementById('chat-input').value = message;
+            sendMessage();
+        }
+
+        function viewDetails(propertyId) {
+            // This would open a detailed view - for now, just ask AI
+            switchTab('chat');
+            const message = `Show me detailed analysis for property ID ${propertyId}`;
+            document.getElementById('chat-input').value = message;
+            sendMessage();
+        }
+
+        // Analytics functionality
+        async function loadAnalytics() {
+            const grid = document.getElementById('analytics-grid');
+            grid.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/market-analytics`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayAnalytics(data.analytics);
+                } else {
+                    grid.innerHTML = '<p>Error loading analytics. Please try again.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                grid.innerHTML = '<p>Error loading analytics. Please check your connection.</p>';
+            }
+        }
+
+        function displayAnalytics(analytics) {
+            const grid = document.getElementById('analytics-grid');
+            const overview = analytics.market_overview;
+            const sentiment = overview.market_sentiment;
+
+            grid.innerHTML = `
+                <div class="analytics-card">
+                    <div class="analytics-title">📊 Market Overview</div>
+                    <div class="metric">
+                        <span class="metric-label">Average Price</span>
+                        <span class="metric-value">$${overview.average_price.toLocaleString()}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Properties</span>
+                        <span class="metric-value">${overview.total_properties}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Average AI Score</span>
+                        <span class="metric-value">${overview.average_ai_score}/10</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Avg Days on Market</span>
+                        <span class="metric-value">${overview.average_days_on_market} days</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-title">📈 Market Sentiment</div>
+                    <div class="metric">
+                        <span class="metric-label">Rising Properties</span>
+                        <span class="metric-value">${sentiment.rising}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Stable Properties</span>
+                        <span class="metric-value">${sentiment.stable}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Declining Properties</span>
+                        <span class="metric-value">${sentiment.declining}</span>
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-title">🏙️ City Analysis</div>
+                    ${analytics.city_analysis.map(city => `
+                        <div class="metric">
+                            <span class="metric-label">${city.city}</span>
+                            <span class="metric-value">$${city.average_price.toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-title">💡 AI Insights</div>
+                    <p style="color: var(--text-dark); line-height: 1.6;">
+                        Based on current market data, properties are showing strong investment potential 
+                        with an average AI score of ${overview.average_ai_score}/10. 
+                        ${sentiment.rising > sentiment.declining ? 'The market trend is positive with more properties rising in value.' : 'Market conditions are mixed - consider properties with higher AI scores.'}
+                    </p>
+                </div>
+            `;
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('EstateIQ initialized successfully!');
+            
+            // Focus on chat input
+            document.getElementById('chat-input').focus();
+        });
+    </script>
+</body>
+</html>
+
