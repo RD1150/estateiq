@@ -340,7 +340,10 @@ def get_properties():
         for prop in properties:
             result.append(dict(zip(columns, prop)))
         
-        return jsonify(result)
+        return jsonify({
+            "success": True,
+            "properties": result
+        })
         
     except Exception as e:
         logger.error(f"Error fetching properties: {str(e)}")
@@ -370,6 +373,7 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/analytics')
+@app.route('/api/market-analytics')
 def get_analytics():
     """Get market analytics and insights"""
     try:
@@ -382,6 +386,7 @@ def get_analytics():
                 AVG(price) as avg_price,
                 COUNT(*) as total_properties,
                 AVG(ai_score) as avg_ai_score,
+                AVG(days_on_market) as avg_days_on_market,
                 SUM(CASE WHEN trend = 'Rising' THEN 1 ELSE 0 END) as rising_count,
                 SUM(CASE WHEN trend = 'Stable' THEN 1 ELSE 0 END) as stable_count,
                 SUM(CASE WHEN trend = 'Declining' THEN 1 ELSE 0 END) as declining_count
@@ -400,15 +405,16 @@ def get_analytics():
         cities = cursor.fetchall()
         conn.close()
         
-        return jsonify({
-            "overview": {
+        analytics_data = {
+            "market_overview": {
                 "average_price": round(stats[0], 2) if stats[0] else 0,
                 "total_properties": stats[1],
                 "average_ai_score": round(stats[2], 1) if stats[2] else 0,
+                "average_days_on_market": round(stats[3], 0) if stats[3] else 0,
                 "market_sentiment": {
-                    "rising": stats[3],
-                    "stable": stats[4],
-                    "declining": stats[5]
+                    "rising": stats[4],
+                    "stable": stats[5],
+                    "declining": stats[6]
                 }
             },
             "cities": [
@@ -420,6 +426,11 @@ def get_analytics():
                 }
                 for city in cities
             ]
+        }
+        
+        return jsonify({
+            "success": True,
+            "analytics": analytics_data
         })
         
     except Exception as e:
@@ -609,8 +620,14 @@ def populate_sample_data():
     conn.close()
     logger.info("Sample data populated successfully")
 
-if __name__ == '__main__':
+# Initialize database and populate data on module load (works with Gunicorn)
+try:
     init_db()
     populate_sample_data()
+    logger.info("Database initialized and sample data loaded")
+except Exception as e:
+    logger.error(f"Error initializing database: {str(e)}")
+
+if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
