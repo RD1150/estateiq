@@ -11,7 +11,7 @@ import json
 import os
 import requests
 from datetime import datetime, timedelta
-import openai
+from openai import OpenAI
 from typing import List, Dict, Any
 import logging
 import time
@@ -30,8 +30,7 @@ RAPIDAPI_HOST = "realtor16.p.rapidapi.com"
 RAPIDAPI_BASE_URL = f"https://{RAPIDAPI_HOST}"
 
 # OpenAI configuration
-openai.api_key = os.getenv('OPENAI_API_KEY', 'your-key-here')
-openai.api_base = os.getenv('OPENAI_API_BASE', 'https://api.openai.com/v1')
+openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Cache configuration
 CACHE_DURATION = 3600  # 1 hour in seconds
@@ -344,7 +343,7 @@ class EstateIQAgent:
             messages.append({"role": "user", "content": user_message})
             
             # Generate response using OpenAI
-            response = openai.ChatCompletion.create(
+            response = openai_client.chat.completions.create(
                 model="gpt-4",
                 messages=messages,
                 max_tokens=500,
