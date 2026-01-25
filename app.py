@@ -1,7 +1,7 @@
 """
-EstateIQ - Enhanced Real Estate AI Platform with ChatGPT-style capabilities
+EstateIQ - Enhanced Real Estate AI Platform with Live API Data
+Integrates Realtor16 RapidAPI for live property listings
 Combines property search, market analytics, and intelligent conversation
-Updated to serve frontend from root directory for Render deployment
 """
 
 from flask import Flask, request, jsonify, send_file
@@ -14,54 +14,221 @@ from datetime import datetime, timedelta
 import openai
 from typing import List, Dict, Any
 import logging
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize Flask app - serve static files from root directory
+# Initialize Flask app
 app = Flask(__name__)
 CORS(app, origins="*")
 
-# OpenAI configuration for ChatGPT-style AI
+# API Configuration
+RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY', 'f04bc72b5bmshef6c6b981b712e9p1e1375jsn62757808867c')
+RAPIDAPI_HOST = "realtor16.p.rapidapi.com"
+RAPIDAPI_BASE_URL = f"https://{RAPIDAPI_HOST}"
+
+# OpenAI configuration
 openai.api_key = os.getenv('OPENAI_API_KEY', 'your-key-here')
 openai.api_base = os.getenv('OPENAI_API_BASE', 'https://api.openai.com/v1')
 
-# Database initialization
+# Cache configuration
+CACHE_DURATION = 3600  # 1 hour in seconds
+property_cache = {
+    'data': None,
+    'timestamp': None
+}
+
+# ===== REALTOR API INTEGRATION =====
+
+def fetch_properties_from_api(location: str, limit: int = 20) -> List[Dict]:
+    """Fetch properties from Realtor16 API"""
+    try:
+        url = f"{RAPIDAPI_BASE_URL}/search/forsale"
+        
+        headers = {
+            "x-rapidapi-key": RAPIDAPI_KEY,
+            "x-rapidapi-host": RAPIDAPI_HOST
+        }
+        
+        params = {
+            "location": location,
+            "sort": "relevant",
+            "limit": str(limit)
+        }
+        
+        logger.info(f"Fetching properties from API for location: {location}")
+        response = requests.get(url, headers=headers, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        # Transform API response to our format
+        properties = []
+        if 'properties' in data:
+            for prop in data['properties']:
+                transformed = transform_api_property(prop)
+                if transformed:
+                    properties.append(transformed)
+        
+        logger.info(f"Successfully fetched {len(properties)} properties from API")
+        return properties
+        
+    except Exception as e:
+        logger.error(f"Error fetching from API: {str(e)}")
+        return []
+
+def transform_api_property(api_prop: Dict) -> Dict:
+    """Transform Realtor API property to EstateIQ format"""
+    try:
+        # Extract address information
+        address_info = api_prop.get('location', {}).get('address', {})
+        
+        # Calculate AI score based on available data
+        ai_score = calculate_ai_score(api_prop)
+        
+        # Estimate rental income (simple formula)
+        price = api_prop.get('list_price', 0)
+        rental_estimate = price * 0.006 if price else 0  # 0.6% of price per month
+        
+        # Calculate cap rate (simple estimate)
+        annual_rent = rental_estimate * 12
+        cap_rate = (annual_rent / price * 100) if price > 0 else 0
+        
+        transformed = {
+            'id': api_prop.get('property_id', ''),
+            'address': address_info.get('line', 'N/A'),
+            'city': address_info.get('city', 'N/A'),
+            'state': address_info.get('state_code', 'CA'),
+            'zip_code': address_info.get('postal_code', ''),
+            'price': price,
+            'bedrooms': api_prop.get('description', {}).get('beds', 0),
+            'bathrooms': api_prop.get('description', {}).get('baths_full', 0) + api_prop.get('description', {}).get('baths_half', 0) * 0.5,
+            'square_feet': api_prop.get('description', {}).get('sqft', 0),
+            'property_type': api_prop.get('description', {}).get('type', 'single_family'),
+            'listing_date': api_prop.get('list_date', datetime.now().strftime('%Y-%m-%d')),
+            'days_on_market': api_prop.get('days_on_market', 0),
+            'ai_score': round(ai_score, 1),
+            'trend': determine_trend(api_prop),
+            'description': api_prop.get('description', {}).get('text', 'Beautiful property'),
+            'amenities': extract_amenities(api_prop),
+            'neighborhood_score': round(ai_score * 0.9, 1),
+            'walkability_score': api_prop.get('walkability_score', 65),
+            'school_rating': api_prop.get('school_rating', 7.5),
+            'crime_rating': 'Low',
+            'investment_potential': determine_investment_potential(ai_score),
+            'rental_estimate': round(rental_estimate, 2),
+            'cap_rate': round(cap_rate, 2),
+            'created_at': datetime.now().isoformat(),
+            'photo_url': api_prop.get('primary_photo', {}).get('href', ''),
+            'property_url': api_prop.get('permalink', '')
+        }
+        
+        return transformed
+        
+    except Exception as e:
+        logger.error(f"Error transforming property: {str(e)}")
+        return None
+
+def calculate_ai_score(prop: Dict) -> float:
+    """Calculate AI score based on property attributes"""
+    score = 7.0  # Base score
+    
+    # Price factor
+    price = prop.get('list_price', 0)
+    if 500000 <= price <= 2000000:
+        score += 1.0
+    elif price < 500000:
+        score += 0.5
+    
+    # Size factor
+    sqft = prop.get('description', {}).get('sqft', 0)
+    if sqft >= 2000:
+        score += 0.5
+    
+    # Beds/baths factor
+    beds = prop.get('description', {}).get('beds', 0)
+    baths = prop.get('description', {}).get('baths', 0)
+    if beds >= 3 and baths >= 2:
+        score += 0.5
+    
+    # Days on market (lower is better)
+    days = prop.get('days_on_market', 0)
+    if days < 30:
+        score += 0.5
+    elif days > 90:
+        score -= 0.5
+    
+    return min(10.0, max(1.0, score))
+
+def determine_trend(prop: Dict) -> str:
+    """Determine price trend"""
+    days = prop.get('days_on_market', 0)
+    if days < 30:
+        return "Rising"
+    elif days > 90:
+        return "Falling"
+    return "Stable"
+
+def determine_investment_potential(ai_score: float) -> str:
+    """Determine investment potential based on AI score"""
+    if ai_score >= 8.5:
+        return "Excellent"
+    elif ai_score >= 7.5:
+        return "Good"
+    elif ai_score >= 6.5:
+        return "Fair"
+    return "Poor"
+
+def extract_amenities(prop: Dict) -> str:
+    """Extract amenities from property data"""
+    amenities = []
+    
+    desc = prop.get('description', {})
+    if desc.get('garage'):
+        amenities.append(f"{desc.get('garage')} car garage")
+    if desc.get('pool'):
+        amenities.append("Pool")
+    if desc.get('fireplace'):
+        amenities.append("Fireplace")
+    
+    return ", ".join(amenities) if amenities else "Standard amenities"
+
+def get_cached_properties() -> List[Dict]:
+    """Get properties from cache or fetch from API"""
+    global property_cache
+    
+    # Check if cache is valid
+    if property_cache['data'] and property_cache['timestamp']:
+        age = time.time() - property_cache['timestamp']
+        if age < CACHE_DURATION:
+            logger.info("Returning cached properties")
+            return property_cache['data']
+    
+    # Fetch fresh data from API
+    logger.info("Cache expired or empty, fetching from API")
+    properties = []
+    
+    # Fetch from both locations
+    westlake_props = fetch_properties_from_api("Westlake Village, CA", limit=10)
+    thousand_oaks_props = fetch_properties_from_api("Thousand Oaks, CA", limit=10)
+    
+    properties.extend(westlake_props)
+    properties.extend(thousand_oaks_props)
+    
+    # Update cache
+    property_cache['data'] = properties
+    property_cache['timestamp'] = time.time()
+    
+    return properties
+
+# ===== DATABASE INITIALIZATION =====
+
 def init_db():
-    """Initialize the EstateIQ database with enhanced schema"""
+    """Initialize the EstateIQ database"""
     conn = sqlite3.connect('estateiq.db')
     cursor = conn.cursor()
-    
-    # Properties table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS properties (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            address TEXT NOT NULL,
-            city TEXT NOT NULL,
-            state TEXT NOT NULL,
-            zip_code TEXT,
-            price REAL NOT NULL,
-            bedrooms INTEGER,
-            bathrooms REAL,
-            square_feet INTEGER,
-            property_type TEXT,
-            listing_date DATE,
-            days_on_market INTEGER,
-            ai_score REAL,
-            trend TEXT,
-            description TEXT,
-            amenities TEXT,
-            neighborhood_score REAL,
-            walkability_score INTEGER,
-            school_rating REAL,
-            crime_rating TEXT,
-            investment_potential TEXT,
-            rental_estimate REAL,
-            cap_rate REAL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
     
     # Conversations table for ChatGPT-style memory
     cursor.execute('''
@@ -94,8 +261,10 @@ def init_db():
     
     conn.commit()
     conn.close()
+    logger.info("Database initialized successfully")
 
-# Enhanced AI Agent Class
+# ===== AI AGENT =====
+
 class EstateIQAgent:
     """Advanced AI agent with ChatGPT-style capabilities for real estate"""
     
@@ -122,120 +291,46 @@ class EstateIQAgent:
     
     def get_conversation_context(self, session_id: str, limit: int = 5) -> List[Dict]:
         """Retrieve recent conversation history for context"""
-        conn = sqlite3.connect('estateiq.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT user_message, ai_response FROM conversations 
-            WHERE session_id = ? 
-            ORDER BY timestamp DESC 
-            LIMIT ?
-        ''', (session_id, limit))
-        
-        history = cursor.fetchall()
-        conn.close()
-        
-        return [{"user": msg[0], "assistant": msg[1]} for msg in reversed(history)]
+        try:
+            conn = sqlite3.connect('estateiq.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT user_message, ai_response FROM conversations 
+                WHERE session_id = ? 
+                ORDER BY timestamp DESC 
+                LIMIT ?
+            ''', (session_id, limit))
+            
+            history = cursor.fetchall()
+            conn.close()
+            
+            return [{"user": msg[0], "assistant": msg[1]} for msg in reversed(history)]
+        except Exception as e:
+            logger.error(f"Error getting conversation context: {str(e)}")
+            return []
     
     def save_conversation(self, session_id: str, user_message: str, ai_response: str, context: str = ""):
         """Save conversation to database for memory"""
-        conn = sqlite3.connect('estateiq.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            INSERT INTO conversations (session_id, user_message, ai_response, context)
-            VALUES (?, ?, ?, ?)
-        ''', (session_id, user_message, ai_response, context))
-        
-        conn.commit()
-        conn.close()
-    
-    def analyze_user_intent(self, message: str) -> Dict[str, Any]:
-        """Analyze user message to determine intent and extract parameters"""
-        intents = {
-            'property_search': ['find', 'search', 'show me', 'looking for', 'want to buy'],
-            'market_analysis': ['market', 'trends', 'analysis', 'neighborhood', 'area'],
-            'investment_advice': ['invest', 'ROI', 'cap rate', 'rental', 'cash flow'],
-            'general_question': ['what', 'how', 'why', 'explain', 'tell me about']
-        }
-        
-        message_lower = message.lower()
-        detected_intent = 'general_question'  # default
-        
-        for intent, keywords in intents.items():
-            if any(keyword in message_lower for keyword in keywords):
-                detected_intent = intent
-                break
-        
-        # Extract parameters (budget, bedrooms, location, etc.)
-        parameters = self.extract_parameters(message)
-        
-        return {
-            'intent': detected_intent,
-            'parameters': parameters,
-            'original_message': message
-        }
-    
-    def extract_parameters(self, message: str) -> Dict[str, Any]:
-        """Extract specific parameters from user message"""
-        import re
-        
-        parameters = {}
-        message_lower = message.lower()
-        
-        # Extract budget
-        budget_patterns = [
-            r'\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s*(?:k|thousand)',
-            r'\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)',
-            r'under\s+\$?(\d+)',
-            r'below\s+\$?(\d+)',
-            r'up\s+to\s+\$?(\d+)'
-        ]
-        
-        for pattern in budget_patterns:
-            match = re.search(pattern, message_lower)
-            if match:
-                amount = match.group(1).replace(',', '')
-                if 'k' in match.group(0) or 'thousand' in match.group(0):
-                    amount = str(int(float(amount)) * 1000)
-                parameters['budget'] = float(amount)
-                break
-        
-        # Extract bedrooms
-        bedroom_match = re.search(r'(\d+)\s*(?:bed|bedroom)', message_lower)
-        if bedroom_match:
-            parameters['bedrooms'] = int(bedroom_match.group(1))
-        
-        # Extract bathrooms
-        bathroom_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:bath|bathroom)', message_lower)
-        if bathroom_match:
-            parameters['bathrooms'] = float(bathroom_match.group(1))
-        
-        # Extract location
-        location_patterns = [
-            r'in\s+([a-zA-Z\s]+?)(?:\s|$|,)',
-            r'near\s+([a-zA-Z\s]+?)(?:\s|$|,)',
-            r'around\s+([a-zA-Z\s]+?)(?:\s|$|,)'
-        ]
-        
-        for pattern in location_patterns:
-            match = re.search(pattern, message_lower)
-            if match:
-                location = match.group(1).strip()
-                if len(location) > 2:  # Avoid single letters
-                    parameters['location'] = location.title()
-                break
-        
-        return parameters
+        try:
+            conn = sqlite3.connect('estateiq.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT INTO conversations (session_id, user_message, ai_response, context)
+                VALUES (?, ?, ?, ?)
+            ''', (session_id, user_message, ai_response, context))
+            
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            logger.error(f"Error saving conversation: {str(e)}")
     
     def generate_response(self, session_id: str, user_message: str) -> str:
         """Generate intelligent response using OpenAI with conversation context"""
         try:
             # Get conversation history for context
             history = self.get_conversation_context(session_id)
-            
-            # Analyze user intent
-            intent_analysis = self.analyze_user_intent(user_message)
             
             # Build messages for OpenAI
             messages = [{"role": "system", "content": self.system_prompt}]
@@ -245,20 +340,8 @@ class EstateIQAgent:
                 messages.append({"role": "user", "content": conv["user"]})
                 messages.append({"role": "assistant", "content": conv["assistant"]})
             
-            # Add current message with intent context
-            context_message = f"""
-            User message: {user_message}
-            
-            Detected intent: {intent_analysis['intent']}
-            Extracted parameters: {json.dumps(intent_analysis['parameters'], indent=2)}
-            
-            Please provide a helpful response based on the intent and parameters.
-            If this is a property search, provide specific guidance on what to look for.
-            If this is investment advice, include relevant calculations and considerations.
-            Always ask follow-up questions to better understand their needs.
-            """
-            
-            messages.append({"role": "user", "content": context_message})
+            # Add current message
+            messages.append({"role": "user", "content": user_message})
             
             # Generate response using OpenAI
             response = openai.ChatCompletion.create(
@@ -271,13 +354,13 @@ class EstateIQAgent:
             ai_response = response.choices[0].message.content
             
             # Save conversation for future context
-            self.save_conversation(session_id, user_message, ai_response, json.dumps(intent_analysis))
+            self.save_conversation(session_id, user_message, ai_response)
             
             return ai_response
             
         except Exception as e:
             logger.error(f"Error generating AI response: {str(e)}")
-            return f"I'm having trouble processing that right now. Could you rephrase your question? (Error: {str(e)})"
+            return "I apologize, but I encountered an error. Could you please rephrase your question?"
 
 # Initialize AI agent
 agent = EstateIQAgent()
@@ -296,62 +379,85 @@ def serve_frontend():
 def get_properties():
     """Get all properties with optional filtering"""
     try:
-        conn = sqlite3.connect('estateiq.db')
-        cursor = conn.cursor()
+        # Get properties from cache/API
+        all_properties = get_cached_properties()
         
-        # Get query parameters
+        # Get query parameters for filtering
         min_price = request.args.get('min_price', type=float)
         max_price = request.args.get('max_price', type=float)
         bedrooms = request.args.get('bedrooms', type=int)
         city = request.args.get('city')
         
-        # Build query
-        query = "SELECT * FROM properties WHERE 1=1"
-        params = []
+        # Filter properties
+        filtered_properties = all_properties
         
         if min_price:
-            query += " AND price >= ?"
-            params.append(min_price)
+            filtered_properties = [p for p in filtered_properties if p.get('price', 0) >= min_price]
         if max_price:
-            query += " AND price <= ?"
-            params.append(max_price)
+            filtered_properties = [p for p in filtered_properties if p.get('price', 0) <= max_price]
         if bedrooms:
-            query += " AND bedrooms = ?"
-            params.append(bedrooms)
+            filtered_properties = [p for p in filtered_properties if p.get('bedrooms', 0) == bedrooms]
         if city:
-            query += " AND city LIKE ?"
-            params.append(f"%{city}%")
-        
-        cursor.execute(query, params)
-        properties = cursor.fetchall()
-        conn.close()
-        
-        # Convert to dict
-        columns = [
-            'id', 'address', 'city', 'state', 'zip_code', 'price', 'bedrooms', 
-            'bathrooms', 'square_feet', 'property_type', 'listing_date', 
-            'days_on_market', 'ai_score', 'trend', 'description', 'amenities',
-            'neighborhood_score', 'walkability_score', 'school_rating', 
-            'crime_rating', 'investment_potential', 'rental_estimate', 'cap_rate',
-            'created_at'
-        ]
-        
-        result = []
-        for prop in properties:
-            result.append(dict(zip(columns, prop)))
+            filtered_properties = [p for p in filtered_properties if city.lower() in p.get('city', '').lower()]
         
         return jsonify({
             "success": True,
-            "properties": result
+            "properties": filtered_properties
         })
         
     except Exception as e:
         logger.error(f"Error fetching properties: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/analytics')
+@app.route('/api/market-analytics')
+def get_analytics():
+    """Get market analytics"""
+    try:
+        properties = get_cached_properties()
+        
+        if not properties:
+            return jsonify({
+                "success": False,
+                "error": "No properties available"
+            }), 404
+        
+        # Calculate analytics
+        prices = [p.get('price', 0) for p in properties if p.get('price', 0) > 0]
+        ai_scores = [p.get('ai_score', 0) for p in properties if p.get('ai_score', 0) > 0]
+        
+        analytics = {
+            "market_overview": {
+                "total_properties": len(properties),
+                "average_price": round(sum(prices) / len(prices), 2) if prices else 0,
+                "median_price": round(sorted(prices)[len(prices) // 2], 2) if prices else 0,
+                "average_ai_score": round(sum(ai_scores) / len(ai_scores), 2) if ai_scores else 0,
+                "average_days_on_market": round(sum(p.get('days_on_market', 0) for p in properties) / len(properties), 0) if properties else 0
+            },
+            "price_distribution": {
+                "under_1m": len([p for p in properties if p.get('price', 0) < 1000000]),
+                "1m_to_2m": len([p for p in properties if 1000000 <= p.get('price', 0) < 2000000]),
+                "over_2m": len([p for p in properties if p.get('price', 0) >= 2000000])
+            },
+            "property_types": {
+                "single_family": len([p for p in properties if 'single' in p.get('property_type', '').lower()]),
+                "condo": len([p for p in properties if 'condo' in p.get('property_type', '').lower()]),
+                "townhouse": len([p for p in properties if 'town' in p.get('property_type', '').lower()])
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "analytics": analytics
+        })
+        
+    except Exception as e:
+        logger.error(f"Error fetching analytics: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    """Enhanced ChatGPT-style AI chat endpoint"""
+    """Handle chat messages with AI assistant"""
     try:
         data = request.json
         user_message = data.get('message', '')
@@ -369,265 +475,38 @@ def chat():
         })
         
     except Exception as e:
-        logger.error(f"Error in chat endpoint: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Error in chat: {str(e)}")
+        return jsonify({"error": "I apologize, but I encountered an error. Please try again."}), 500
 
-@app.route('/api/analytics')
-@app.route('/api/market-analytics')
-def get_analytics():
-    """Get market analytics and insights"""
+@app.route('/api/refresh-properties', methods=['POST'])
+def refresh_properties():
+    """Manually refresh property cache"""
     try:
-        conn = sqlite3.connect('estateiq.db')
-        cursor = conn.cursor()
+        global property_cache
+        property_cache['data'] = None
+        property_cache['timestamp'] = None
         
-        # Get aggregate statistics
-        cursor.execute('''
-            SELECT 
-                AVG(price) as avg_price,
-                COUNT(*) as total_properties,
-                AVG(ai_score) as avg_ai_score,
-                AVG(days_on_market) as avg_days_on_market,
-                SUM(CASE WHEN trend = 'Rising' THEN 1 ELSE 0 END) as rising_count,
-                SUM(CASE WHEN trend = 'Stable' THEN 1 ELSE 0 END) as stable_count,
-                SUM(CASE WHEN trend = 'Declining' THEN 1 ELSE 0 END) as declining_count
-            FROM properties
-        ''')
-        
-        stats = cursor.fetchone()
-        
-        # Get city breakdown
-        cursor.execute('''
-            SELECT city, COUNT(*) as count, AVG(price) as avg_price, AVG(ai_score) as avg_score
-            FROM properties
-            GROUP BY city
-        ''')
-        
-        cities = cursor.fetchall()
-        conn.close()
-        
-        analytics_data = {
-            "market_overview": {
-                "average_price": round(stats[0], 2) if stats[0] else 0,
-                "total_properties": stats[1],
-                "average_ai_score": round(stats[2], 1) if stats[2] else 0,
-                "average_days_on_market": round(stats[3], 0) if stats[3] else 0,
-                "market_sentiment": {
-                    "rising": stats[4],
-                    "stable": stats[5],
-                    "declining": stats[6]
-                }
-            },
-            "cities": [
-                {
-                    "city": city[0],
-                    "property_count": city[1],
-                    "average_price": round(city[2], 2),
-                    "average_score": round(city[3], 1)
-                }
-                for city in cities
-            ]
-        }
+        properties = get_cached_properties()
         
         return jsonify({
             "success": True,
-            "analytics": analytics_data
+            "message": f"Refreshed {len(properties)} properties",
+            "count": len(properties)
         })
         
     except Exception as e:
-        logger.error(f"Error fetching analytics: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Error refreshing properties: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
 
-# Sample data population
-def populate_sample_data():
-    """Populate database with sample Westlake Village and Thousand Oaks properties"""
-    conn = sqlite3.connect('estateiq.db')
-    cursor = conn.cursor()
-    
-    # Check if data already exists
-    cursor.execute("SELECT COUNT(*) FROM properties")
-    if cursor.fetchone()[0] > 0:
-        conn.close()
-        logger.info("Sample data already exists")
-        return
-    
-    sample_properties = [
-        {
-            'address': '1245 Lakeview Canyon Road',
-            'city': 'Westlake Village',
-            'state': 'CA',
-            'zip_code': '91361',
-            'price': 2850000,
-            'bedrooms': 5,
-            'bathrooms': 4.5,
-            'square_feet': 4200,
-            'property_type': 'Single Family',
-            'listing_date': '2024-06-15',
-            'days_on_market': 18,
-            'ai_score': 9.2,
-            'trend': 'Rising',
-            'description': 'Stunning Mediterranean estate with panoramic lake views, infinity pool, and wine cellar. Gated community with resort-style amenities.',
-            'amenities': 'Infinity pool, wine cellar, home theater, 3-car garage, smart home, outdoor kitchen',
-            'neighborhood_score': 9.5,
-            'walkability_score': 72,
-            'school_rating': 9.3,
-            'crime_rating': 'Very Low',
-            'investment_potential': 'Excellent',
-            'rental_estimate': 12500,
-            'cap_rate': 5.3
-        },
-        {
-            'address': '3890 Via Pacifica',
-            'city': 'Westlake Village',
-            'state': 'CA',
-            'zip_code': '91362',
-            'price': 1650000,
-            'bedrooms': 4,
-            'bathrooms': 3.0,
-            'square_feet': 3100,
-            'property_type': 'Single Family',
-            'listing_date': '2024-06-20',
-            'days_on_market': 12,
-            'ai_score': 8.7,
-            'trend': 'Rising',
-            'description': 'Modern luxury home in North Ranch with mountain views, chef\'s kitchen, and spa-like master suite.',
-            'amenities': 'Gourmet kitchen, spa bathroom, office, pool, solar panels, EV charger',
-            'neighborhood_score': 9.2,
-            'walkability_score': 65,
-            'school_rating': 9.0,
-            'crime_rating': 'Very Low',
-            'investment_potential': 'Excellent',
-            'rental_estimate': 8500,
-            'cap_rate': 6.2
-        },
-        {
-            'address': '2156 Thousand Oaks Boulevard',
-            'city': 'Thousand Oaks',
-            'state': 'CA',
-            'zip_code': '91362',
-            'price': 1250000,
-            'bedrooms': 4,
-            'bathrooms': 3.0,
-            'square_feet': 2800,
-            'property_type': 'Single Family',
-            'listing_date': '2024-05-10',
-            'days_on_market': 25,
-            'ai_score': 8.4,
-            'trend': 'Stable',
-            'description': 'Beautiful ranch-style home in desirable Lang Ranch area with updated kitchen, hardwood floors, and large backyard.',
-            'amenities': 'Updated kitchen, hardwood floors, fireplace, 2-car garage, covered patio',
-            'neighborhood_score': 8.8,
-            'walkability_score': 58,
-            'school_rating': 8.8,
-            'crime_rating': 'Low',
-            'investment_potential': 'Very Good',
-            'rental_estimate': 6200,
-            'cap_rate': 6.0
-        },
-        {
-            'address': '4521 Conejo School Road',
-            'city': 'Thousand Oaks',
-            'state': 'CA',
-            'zip_code': '91360',
-            'price': 975000,
-            'bedrooms': 3,
-            'bathrooms': 2.5,
-            'square_feet': 2200,
-            'property_type': 'Single Family',
-            'listing_date': '2024-06-25',
-            'days_on_market': 8,
-            'ai_score': 8.1,
-            'trend': 'Rising',
-            'description': 'Move-in ready home near top-rated schools with open floor plan, granite counters, and mountain views.',
-            'amenities': 'Granite counters, stainless appliances, fireplace, landscaped yard, 2-car garage',
-            'neighborhood_score': 8.5,
-            'walkability_score': 62,
-            'school_rating': 9.1,
-            'crime_rating': 'Low',
-            'investment_potential': 'Very Good',
-            'rental_estimate': 5200,
-            'cap_rate': 6.4
-        },
-        {
-            'address': '789 Westlake Plaza',
-            'city': 'Westlake Village',
-            'state': 'CA',
-            'zip_code': '91361',
-            'price': 895000,
-            'bedrooms': 2,
-            'bathrooms': 2.5,
-            'square_feet': 1850,
-            'property_type': 'Townhouse',
-            'listing_date': '2024-06-18',
-            'days_on_market': 15,
-            'ai_score': 7.9,
-            'trend': 'Stable',
-            'description': 'Elegant townhouse in prime location near The Oaks shopping center with modern finishes and community amenities.',
-            'amenities': 'Community pool, gym, attached garage, granite counters, walk-in closets',
-            'neighborhood_score': 9.0,
-            'walkability_score': 85,
-            'school_rating': 8.7,
-            'crime_rating': 'Very Low',
-            'investment_potential': 'Good',
-            'rental_estimate': 4800,
-            'cap_rate': 6.4
-        },
-        {
-            'address': '3345 Moorpark Road',
-            'city': 'Thousand Oaks',
-            'state': 'CA',
-            'zip_code': '91360',
-            'price': 825000,
-            'bedrooms': 3,
-            'bathrooms': 2.0,
-            'square_feet': 1950,
-            'property_type': 'Single Family',
-            'listing_date': '2024-07-05',
-            'days_on_market': 22,
-            'ai_score': 7.6,
-            'trend': 'Rising',
-            'description': 'Charming single-story home in established neighborhood with vaulted ceilings and private backyard.',
-            'amenities': 'Vaulted ceilings, updated kitchen, large lot, fruit trees, 2-car garage',
-            'neighborhood_score': 8.2,
-            'walkability_score': 55,
-            'school_rating': 8.5,
-            'crime_rating': 'Low',
-            'investment_potential': 'Good',
-            'rental_estimate': 4500,
-            'cap_rate': 6.5
-        }
-    ]
-    
-    for prop in sample_properties:
-        cursor.execute('''
-            INSERT INTO properties (
-                address, city, state, zip_code, price, bedrooms, bathrooms, 
-                square_feet, property_type, listing_date, days_on_market, 
-                ai_score, trend, description, amenities, neighborhood_score,
-                walkability_score, school_rating, crime_rating, investment_potential,
-                rental_estimate, cap_rate
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            prop['address'], prop['city'], prop['state'], prop['zip_code'],
-            prop['price'], prop['bedrooms'], prop['bathrooms'], prop['square_feet'],
-            prop['property_type'], prop['listing_date'], prop['days_on_market'],
-            prop['ai_score'], prop['trend'], prop['description'], prop['amenities'],
-            prop['neighborhood_score'], prop['walkability_score'], prop['school_rating'],
-            prop['crime_rating'], prop['investment_potential'], prop['rental_estimate'],
-            prop['cap_rate']
-        ))
-    
-    conn.commit()
-    conn.close()
-    logger.info("Sample data populated successfully")
+# ===== INITIALIZATION =====
 
-# Initialize database and populate data on module load (works with Gunicorn)
+# Initialize database on module load
 try:
     init_db()
-    populate_sample_data()
-    logger.info("Database initialized and sample data loaded")
+    logger.info("EstateIQ initialized successfully with Realtor16 API integration")
 except Exception as e:
-    logger.error(f"Error initializing database: {str(e)}")
+    logger.error(f"Error initializing EstateIQ: {str(e)}")
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
