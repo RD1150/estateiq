@@ -1,3 +1,4 @@
+
 """
 EstateIQ - Enhanced Real Estate AI Platform with Live API Data & Lead Capture
 Integrates Realtor16 RapidAPI for live property listings
@@ -359,7 +360,7 @@ class EstateIQAgent:
             
             # Generate response using OpenAI
             response = openai_client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o-mini",
                 messages=messages,
                 max_tokens=500,
                 temperature=0.7
@@ -374,6 +375,9 @@ class EstateIQAgent:
             
         except Exception as e:
             logger.error(f"Error generating AI response: {str(e)}")
+            logger.error(f"Error type: {type(e).__name__}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return "I apologize, but I encountered an error. Could you please rephrase your question?"
 
 # Initialize AI agent
