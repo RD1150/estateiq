@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EstateIQ - Intelligence Meets Wealth</title>
-    <meta name="description" content="EstateIQ - Your intelligent real estate assistant for building wealth through smart property investments">
+    <title>EstateIQ - Find Your Perfect Home in Westlake Village & Thousand Oaks</title>
+    <meta name="description" content="EstateIQ - AI-powered insights to help you find your perfect home in Westlake Village and Thousand Oaks, CA">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
     <style>
         * {
@@ -99,49 +99,43 @@
         }
 
         .nav-tab {
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: 2px solid transparent;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: none;
+            border: none;
             color: var(--primary-cream);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .nav-tab:hover {
-            background: var(--gradient-gold);
-            color: var(--background-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-soft);
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
         }
 
         .nav-tab.active {
             background: var(--gradient-gold);
             color: var(--background-dark);
-            box-shadow: var(--shadow-strong);
+            box-shadow: var(--shadow-soft);
         }
 
         /* Main Content */
         .main-content {
             padding: 2rem 0;
-            min-height: calc(100vh - 120px);
         }
 
         .hero-section {
             text-align: center;
-            padding: 3rem 0;
-            background: white;
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            margin-bottom: 3rem;
-            box-shadow: var(--shadow-strong);
-            border: 2px solid var(--accent-gold);
+            padding: 2rem 0 3rem;
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-dark);
             margin-bottom: 1rem;
             background: var(--gradient-gold);
             -webkit-background-clip: text;
@@ -152,30 +146,40 @@
         .hero-subtitle {
             font-size: 1.3rem;
             color: var(--text-dark);
-            margin-bottom: 2rem;
             opacity: 0.8;
         }
 
-        /* Chat Interface */
+        /* Tab Content */
+        .tab-content {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Chat Styles */
         .chat-container {
+            max-width: 900px;
+            margin: 0 auto;
             background: white;
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 20px;
             box-shadow: var(--shadow-strong);
-            max-height: 600px;
-            display: flex;
-            flex-direction: column;
-            border: 2px solid var(--accent-gold);
+            overflow: hidden;
         }
 
         .chat-header {
+            background: var(--gradient-dark);
+            color: var(--text-light);
+            padding: 1.5rem;
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
             border-bottom: 2px solid var(--accent-gold);
         }
 
@@ -187,103 +191,132 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--background-dark);
             font-size: 1.5rem;
-            box-shadow: var(--shadow-soft);
         }
 
         .chat-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
         .chat-subtitle {
             font-size: 0.9rem;
-            color: var(--accent-gold);
-            margin-top: 0.25rem;
+            opacity: 0.8;
         }
 
         .chat-messages {
-            flex: 1;
+            height: 500px;
             overflow-y: auto;
-            padding: 1rem 0;
-            max-height: 400px;
+            padding: 2rem;
+            background: var(--background-light);
+        }
+
+        .welcome-message {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .welcome-message h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message p {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .quick-action {
+            background: var(--gradient-gold);
+            color: var(--background-dark);
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
         }
 
         .message {
-            margin-bottom: 1.5rem;
             display: flex;
             gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.3s ease;
         }
 
-        .message.user {
-            flex-direction: row-reverse;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .message-avatar {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             flex-shrink: 0;
         }
 
         .message.user .message-avatar {
-            background: var(--gradient-gold);
-            color: white;
+            background: var(--accent-gold-light);
         }
 
         .message.ai .message-avatar {
             background: var(--gradient-gold);
-            color: var(--background-dark);
         }
 
         .message-content {
-            background: var(--primary-beige);
+            background: white;
             padding: 1rem 1.5rem;
-            border-radius: 20px;
-            max-width: 70%;
-            line-height: 1.5;
+            border-radius: 15px;
+            box-shadow: var(--shadow-soft);
+            max-width: 80%;
         }
 
         .message.user .message-content {
-            background: var(--background-dark);
-            color: white;
-            border-radius: 20px 20px 5px 20px;
-        }
-
-        .message.ai .message-content {
-            background: var(--primary-beige);
-            border-radius: 20px 20px 20px 5px;
-            border: 1px solid var(--accent-gold);
+            background: var(--accent-gold-light);
         }
 
         .chat-input-container {
             display: flex;
             gap: 1rem;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 2px solid var(--accent-gold);
+            padding: 1.5rem;
+            background: white;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .chat-input {
             flex: 1;
             padding: 1rem 1.5rem;
-            border: 2px solid var(--accent-gold);
-            border-radius: 25px;
+            border: 2px solid var(--accent-gold-light);
+            border-radius: 12px;
             font-size: 1rem;
-            outline: none;
             transition: all 0.3s ease;
-            background: white;
         }
 
         .chat-input:focus {
+            outline: none;
             border-color: var(--accent-gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
 
         .send-button {
@@ -291,7 +324,7 @@
             background: var(--gradient-gold);
             color: var(--background-dark);
             border: none;
-            border-radius: 25px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -304,7 +337,7 @@
         }
 
         .send-button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
@@ -312,50 +345,45 @@
         /* Properties Grid */
         .properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .property-card {
             background: white;
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 1.5rem;
             box-shadow: var(--shadow-soft);
             transition: all 0.3s ease;
-            border: 2px solid var(--accent-gold);
+            border: 2px solid transparent;
         }
 
         .property-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-strong);
+            border-color: var(--accent-gold);
         }
 
         .property-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             margin-bottom: 1rem;
         }
 
         .property-price {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
         }
 
         .ai-score {
             background: var(--gradient-gold);
             color: var(--background-dark);
             padding: 0.5rem 1rem;
-            border-radius: 15px;
-            font-weight: 700;
+            border-radius: 20px;
+            font-weight: 600;
             font-size: 0.9rem;
-            box-shadow: var(--shadow-soft);
         }
 
         .property-address {
@@ -368,14 +396,14 @@
         .property-details {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1rem;
-            color: var(--accent-gold);
-            font-weight: 500;
+            margin: 1rem 0;
+            color: var(--text-dark);
+            opacity: 0.8;
         }
 
         .property-description {
             color: var(--text-dark);
-            margin-bottom: 1rem;
+            margin: 1rem 0;
             line-height: 1.5;
         }
 
@@ -383,87 +411,79 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-bottom: 1rem;
+            margin: 1rem 0;
         }
 
         .badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: var(--accent-gold-light);
+            color: var(--text-dark);
         }
 
         .badge.trend-rising {
-            background: rgba(80, 200, 120, 0.2);
-            color: #50c878;
+            background: #d4f4dd;
+            color: #2d5f3f;
         }
 
-        .badge.trend-stable {
-            background: rgba(212, 175, 55, 0.2);
-            color: #d4af37;
+        .badge.trend-falling {
+            background: #ffd4d4;
+            color: #8b2e2e;
         }
 
         .property-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            flex: 1;
+            padding: 0.75rem;
             border: none;
-            border-radius: 15px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
         }
 
         .btn-primary {
             background: var(--gradient-gold);
             color: var(--background-dark);
-            box-shadow: var(--shadow-soft);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-strong);
         }
 
         .btn-secondary {
-            background: white;
-            color: var(--accent-gold);
-            border: 2px solid var(--accent-gold);
+            background: var(--accent-gold-light);
+            color: var(--text-dark);
         }
 
-        .btn-secondary:hover {
-            background: var(--accent-gold);
-            color: var(--background-dark);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
         }
 
-        /* Analytics Dashboard */
+        /* Analytics Grid */
         .analytics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .analytics-card {
             background: white;
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 2rem;
             box-shadow: var(--shadow-soft);
-            border: 2px solid var(--accent-gold);
+            border-left: 4px solid var(--accent-gold);
         }
 
         .analytics-title {
             font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-weight: 600;
             color: var(--text-dark);
+            margin-bottom: 1.5rem;
         }
 
         .metric {
@@ -471,7 +491,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid var(--accent-gold-light);
         }
 
         .metric:last-child {
@@ -480,117 +500,224 @@
 
         .metric-label {
             color: var(--text-dark);
-            font-weight: 500;
+            opacity: 0.8;
         }
 
         .metric-value {
-            font-weight: 700;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
         }
 
-        /* Loading States */
+        /* Loading Spinner */
         .loading {
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 2rem;
+            align-items: center;
+            padding: 3rem;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(212, 175, 55, 0.3);
-            border-left: 4px solid var(--accent-gold);
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--accent-gold-light);
+            border-top-color: var(--accent-gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Email Capture Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow-strong);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-subtitle {
+            font-size: 1rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .modal-benefits {
+            background: var(--background-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-benefits li {
+            padding: 0.5rem 0;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-benefits li:before {
+            content: "✓";
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-input {
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--accent-gold-light);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .modal-button {
+            padding: 1rem 2rem;
+            background: var(--gradient-gold);
+            color: var(--background-dark);
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .modal-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal-footer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            opacity: 0.6;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
             }
 
             .nav-tabs {
-                gap: 1rem;
+                gap: 0.5rem;
             }
 
             .nav-tab {
-                padding: 0.5rem 1rem;
                 font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
             }
 
             .properties-grid {
                 grid-template-columns: 1fr;
             }
 
-            .message-content {
-                max-width: 85%;
+            .analytics-grid {
+                grid-template-columns: 1fr;
             }
 
-            .chat-input-container {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .chat-input {
-                width: 100%;
+            .modal-content {
+                padding: 2rem;
             }
         }
 
-        /* Hidden class for tab switching */
         .hidden {
-            display: none !important;
-        }
-
-        /* Welcome message styling */
-        .welcome-message {
-            background: var(--primary-beige);
-            border-left: 4px solid var(--accent-gold);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-        }
-
-        .welcome-message h3 {
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .welcome-message p {
-            color: var(--accent-gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-
-        .quick-action {
-            background: var(--gradient-gold);
-            color: var(--background-dark);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .quick-action:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-soft);
+            display: none;
         }
     </style>
 </head>
@@ -603,7 +730,7 @@
                         <div class="logo-icon">🏠</div>
                         EstateIQ
                     </div>
-                    <div class="tagline">Intelligence Meets Wealth</div>
+                    <div class="tagline">Find Your Perfect Home in Westlake Village & Thousand Oaks</div>
                 </div>
                 <nav class="nav-tabs">
                     <button class="nav-tab active" data-tab="chat">AI Assistant</button>
@@ -617,8 +744,8 @@
     <main class="main-content">
         <div class="container">
             <div class="hero-section">
-                <h1 class="hero-title">Find Your Perfect Property</h1>
-                <p class="hero-subtitle">AI-powered real estate intelligence for smarter investment decisions</p>
+                <h1 class="hero-title">Find Your Perfect Home</h1>
+                <p class="hero-subtitle">AI-powered insights for homebuyers in Westlake Village & Thousand Oaks, CA</p>
             </div>
 
             <!-- AI Chat Tab -->
@@ -628,33 +755,33 @@
                         <div class="chat-avatar">🤖</div>
                         <div>
                             <div class="chat-title">EstateIQ Assistant</div>
-                            <div class="chat-subtitle">Your intelligent real estate advisor</div>
+                            <div class="chat-subtitle">Your intelligent homebuying advisor</div>
                         </div>
                     </div>
                     
                     <div class="chat-messages" id="chat-messages">
                         <div class="welcome-message">
                             <h3>Welcome to EstateIQ! 🏠✨</h3>
-                            <p>I'm your intelligent real estate assistant, here to help you make smart property decisions and build wealth through real estate.</p>
+                            <p>I'm your intelligent real estate assistant, here to help you find your perfect home in Westlake Village and Thousand Oaks.</p>
                             <p><strong>I can help you with:</strong></p>
                             <ul style="margin-left: 1rem; color: var(--text-dark);">
-                                <li>Finding properties that match your criteria</li>
-                                <li>Analyzing investment potential and ROI</li>
-                                <li>Understanding market trends and neighborhoods</li>
-                                <li>Calculating mortgage payments and cash flow</li>
-                                <li>Answering any real estate questions you have</li>
+                                <li>Finding homes that match your budget and lifestyle</li>
+                                <li>Understanding neighborhood schools and amenities</li>
+                                <li>Analyzing market trends and pricing</li>
+                                <li>Calculating mortgage payments and affordability</li>
+                                <li>Answering any homebuying questions you have</li>
                             </ul>
                             <div class="quick-actions">
-                                <button class="quick-action" onclick="sendQuickMessage('Show me properties under $500k')">Properties under $500k</button>
-                                <button class="quick-action" onclick="sendQuickMessage('What makes a good investment property?')">Investment advice</button>
-                                <button class="quick-action" onclick="sendQuickMessage('Analyze the Austin market')">Market analysis</button>
-                                <button class="quick-action" onclick="sendQuickMessage('Help me calculate ROI')">ROI calculator</button>
+                                <button class="quick-action" onclick="sendQuickMessage('Show me family-friendly homes under $1.5M')">Family homes under $1.5M</button>
+                                <button class="quick-action" onclick="sendQuickMessage('What are the best neighborhoods for families?')">Best neighborhoods</button>
+                                <button class="quick-action" onclick="sendQuickMessage('How is the Westlake Village market?')">Market insights</button>
+                                <button class="quick-action" onclick="sendQuickMessage('Help me understand mortgage options')">Mortgage help</button>
                             </div>
                         </div>
                     </div>
                     
                     <div class="chat-input-container">
-                        <input type="text" id="chat-input" class="chat-input" placeholder="Ask me anything about real estate..." onkeypress="handleKeyPress(event)">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Ask me anything about finding your perfect home..." onkeypress="handleKeyPress(event)">
                         <button id="send-button" class="send-button" onclick="sendMessage()">Send</button>
                     </div>
                 </div>
@@ -680,13 +807,151 @@
         </div>
     </main>
 
+    <!-- Email Capture Modal -->
+    <div id="email-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-icon">🎉</div>
+            <h2 class="modal-title">You're Exploring Great Options!</h2>
+            <p class="modal-subtitle">Create a free account to unlock unlimited access and save your favorite properties.</p>
+            
+            <div class="modal-benefits">
+                <ul>
+                    <li>Unlimited property browsing</li>
+                    <li>Save and compare your favorites</li>
+                    <li>Unlimited AI Assistant conversations</li>
+                    <li>Personalized market insights</li>
+                    <li>Monthly market reports</li>
+                </ul>
+            </div>
+
+            <form class="modal-form" onsubmit="submitEmail(event)">
+                <input 
+                    type="email" 
+                    id="email-input" 
+                    class="modal-input" 
+                    placeholder="Enter your email address" 
+                    required
+                >
+                <button type="submit" id="modal-submit" class="modal-button">
+                    Get Unlimited Access
+                </button>
+            </form>
+
+            <div class="modal-footer">
+                No spam, ever. Unsubscribe anytime.
+            </div>
+        </div>
+    </div>
+
     <script>
         // Global variables
-        let sessionId = 'session_' + Date.now();
+        let sessionId = localStorage.getItem('estateiq_session') || 'session_' + Date.now();
+        localStorage.setItem('estateiq_session', sessionId);
+        
         let currentTab = 'chat';
+        let propertiesViewed = parseInt(localStorage.getItem('properties_viewed') || '0');
+        let aiMessagesCount = parseInt(localStorage.getItem('ai_messages') || '0');
+        let hasEmail = localStorage.getItem('user_email') !== null;
 
         // API Base URL
         const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '';
+
+        // Check limits on page load
+        if (propertiesViewed >= 5 && !hasEmail) {
+            setTimeout(() => showEmailModal('property_limit'), 1000);
+        }
+
+        // Modal functions
+        function showEmailModal(source) {
+            if (hasEmail) return;
+            
+            const modal = document.getElementById('email-modal');
+            modal.classList.add('active');
+            
+            // Update modal text based on source
+            const title = document.querySelector('.modal-title');
+            const subtitle = document.querySelector('.modal-subtitle');
+            
+            if (source === 'property_limit') {
+                title.textContent = "You've Viewed 5 Properties!";
+                subtitle.textContent = "You're clearly serious about finding your perfect home. Create a free account to continue browsing unlimited properties.";
+            } else if (source === 'ai_limit') {
+                title.textContent = "You're Asking Great Questions!";
+                subtitle.textContent = "Create a free account to continue your conversation and get unlimited AI assistance.";
+            }
+            
+            // Store source for tracking
+            modal.dataset.source = source;
+        }
+
+        function closeModal() {
+            document.getElementById('email-modal').classList.remove('active');
+        }
+
+        async function submitEmail(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('email-input');
+            const submitButton = document.getElementById('modal-submit');
+            const email = emailInput.value.trim();
+            
+            if (!email) return;
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+            
+            try {
+                const modal = document.getElementById('email-modal');
+                const source = modal.dataset.source || 'manual';
+                
+                const response = await fetch(`${API_BASE}/api/capture-lead`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        session_id: sessionId,
+                        source: source
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('user_email', email);
+                    hasEmail = true;
+                    
+                    // Reset counters
+                    localStorage.setItem('properties_viewed', '0');
+                    localStorage.setItem('ai_messages', '0');
+                    propertiesViewed = 0;
+                    aiMessagesCount = 0;
+                    
+                    // Show success message
+                    const modalContent = document.querySelector('.modal-content');
+                    modalContent.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <div class="modal-icon">✅</div>
+                            <h2 class="modal-title">Welcome to EstateIQ!</h2>
+                            <p class="modal-subtitle">You now have unlimited access to all features. Happy house hunting!</p>
+                            <button class="modal-button" onclick="closeModal()">Start Exploring</button>
+                        </div>
+                    `;
+                    
+                    setTimeout(closeModal, 3000);
+                } else {
+                    alert('Error saving email. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting email:', error);
+                alert('Error connecting to server. Please try again.');
+            }
+            
+            submitButton.disabled = false;
+            submitButton.textContent = 'Get Unlimited Access';
+        }
 
         // Tab switching functionality
         document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -731,6 +996,12 @@
         }
 
         async function sendMessage() {
+            // Check AI message limit
+            if (aiMessagesCount >= 3 && !hasEmail) {
+                showEmailModal('ai_limit');
+                return;
+            }
+            
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             
@@ -758,8 +1029,15 @@
 
                 const data = await response.json();
 
-                if (data.success) {
+                if (data.response) {
                     addMessage(data.response, 'ai');
+                    
+                    // Increment AI message counter
+                    aiMessagesCount++;
+                    localStorage.setItem('ai_messages', aiMessagesCount.toString());
+                    
+                    // Track activity
+                    trackActivity('ai_message');
                 } else {
                     addMessage('I apologize, but I encountered an error. Please try again.', 'ai');
                 }
@@ -822,7 +1100,7 @@
             }
 
             grid.innerHTML = properties.map(property => `
-                <div class="property-card">
+                <div class="property-card" onclick="trackPropertyView()">
                     <div class="property-header">
                         <div class="property-price">$${property.price.toLocaleString()}</div>
                         <div class="ai-score">⭐ ${property.ai_score}/10</div>
@@ -839,11 +1117,43 @@
                         <span class="badge">${property.days_on_market} days on market</span>
                     </div>
                     <div class="property-actions">
-                        <button class="btn btn-primary" onclick="askAboutProperty('${property.address}')">Ask AI</button>
-                        <button class="btn btn-secondary" onclick="viewDetails(${property.id})">Details</button>
+                        <button class="btn btn-primary" onclick="askAboutProperty('${property.address}'); event.stopPropagation();">Ask AI</button>
+                        <button class="btn btn-secondary" onclick="viewDetails(${property.id}); event.stopPropagation();">Details</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function trackPropertyView() {
+            if (hasEmail) return;
+            
+            propertiesViewed++;
+            localStorage.setItem('properties_viewed', propertiesViewed.toString());
+            
+            // Track activity
+            trackActivity('property_view');
+            
+            // Show modal after 5 views
+            if (propertiesViewed >= 5) {
+                showEmailModal('property_limit');
+            }
+        }
+
+        async function trackActivity(type) {
+            try {
+                await fetch(`${API_BASE}/api/track-activity`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        type: type
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking activity:', error);
+            }
         }
 
         function askAboutProperty(address) {
@@ -854,7 +1164,6 @@
         }
 
         function viewDetails(propertyId) {
-            // This would open a detailed view - for now, just ask AI
             switchTab('chat');
             const message = `Show me detailed analysis for property ID ${propertyId}`;
             document.getElementById('chat-input').value = message;
@@ -884,7 +1193,8 @@
         function displayAnalytics(analytics) {
             const grid = document.getElementById('analytics-grid');
             const overview = analytics.market_overview;
-            const sentiment = overview.market_sentiment;
+            const priceDistribution = analytics.price_distribution;
+            const propertyTypes = analytics.property_types;
 
             grid.innerHTML = `
                 <div class="analytics-card">
@@ -892,6 +1202,10 @@
                     <div class="metric">
                         <span class="metric-label">Average Price</span>
                         <span class="metric-value">$${overview.average_price.toLocaleString()}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Median Price</span>
+                        <span class="metric-value">$${overview.median_price.toLocaleString()}</span>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Total Properties</span>
@@ -908,37 +1222,43 @@
                 </div>
 
                 <div class="analytics-card">
-                    <div class="analytics-title">📈 Market Sentiment</div>
+                    <div class="analytics-title">💰 Price Distribution</div>
                     <div class="metric">
-                        <span class="metric-label">Rising Properties</span>
-                        <span class="metric-value">${sentiment.rising}</span>
+                        <span class="metric-label">Under $1M</span>
+                        <span class="metric-value">${priceDistribution.under_1m} properties</span>
                     </div>
                     <div class="metric">
-                        <span class="metric-label">Stable Properties</span>
-                        <span class="metric-value">${sentiment.stable}</span>
+                        <span class="metric-label">$1M - $2M</span>
+                        <span class="metric-value">${priceDistribution['1m_to_2m']} properties</span>
                     </div>
                     <div class="metric">
-                        <span class="metric-label">Declining Properties</span>
-                        <span class="metric-value">${sentiment.declining}</span>
+                        <span class="metric-label">Over $2M</span>
+                        <span class="metric-value">${priceDistribution.over_2m} properties</span>
                     </div>
                 </div>
 
                 <div class="analytics-card">
-                    <div class="analytics-title">🏙️ City Analysis</div>
-                    ${analytics.city_analysis.map(city => `
-                        <div class="metric">
-                            <span class="metric-label">${city.city}</span>
-                            <span class="metric-value">$${city.average_price.toLocaleString()}</span>
-                        </div>
-                    `).join('')}
+                    <div class="analytics-title">🏡 Property Types</div>
+                    <div class="metric">
+                        <span class="metric-label">Single Family</span>
+                        <span class="metric-value">${propertyTypes.single_family}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Condos</span>
+                        <span class="metric-value">${propertyTypes.condo}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Townhouses</span>
+                        <span class="metric-value">${propertyTypes.townhouse}</span>
+                    </div>
                 </div>
 
                 <div class="analytics-card">
-                    <div class="analytics-title">💡 AI Insights</div>
+                    <div class="analytics-title">💡 Market Insights</div>
                     <p style="color: var(--text-dark); line-height: 1.6;">
-                        Based on current market data, properties are showing strong investment potential 
-                        with an average AI score of ${overview.average_ai_score}/10. 
-                        ${sentiment.rising > sentiment.declining ? 'The market trend is positive with more properties rising in value.' : 'Market conditions are mixed - consider properties with higher AI scores.'}
+                        The Westlake Village and Thousand Oaks market is showing strong activity with an average price of $${overview.average_price.toLocaleString()}. 
+                        Properties are averaging ${overview.average_days_on_market} days on market, with an average AI score of ${overview.average_ai_score}/10, 
+                        indicating good investment potential for homebuyers in this area.
                     </p>
                 </div>
             `;
@@ -954,4 +1274,3 @@
     </script>
 </body>
 </html>
-
