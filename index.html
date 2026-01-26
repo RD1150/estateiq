@@ -889,6 +889,24 @@
             document.getElementById('email-modal').classList.remove('active');
         }
 
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalOverlay = document.getElementById('email-modal');
+            
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+            
+            // Close modal with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        });
+
         async function submitEmail(event) {
             event.preventDefault();
             
@@ -1274,3 +1292,4 @@
     </script>
 </body>
 </html>
+
