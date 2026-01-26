@@ -1,7 +1,7 @@
 """
-EstateIQ - Enhanced Real Estate AI Platform with Live API Data
+EstateIQ - Enhanced Real Estate AI Platform with Live API Data & Lead Capture
 Integrates Realtor16 RapidAPI for live property listings
-Combines property search, market analytics, and intelligent conversation
+Combines property search, market analytics, intelligent conversation, and lead generation
 """
 
 from flask import Flask, request, jsonify, send_file
@@ -258,6 +258,20 @@ def init_db():
         )
     ''')
     
+    # Leads table for email capture
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS leads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL UNIQUE,
+            session_id TEXT,
+            source TEXT,
+            properties_viewed INTEGER DEFAULT 0,
+            ai_messages_sent INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
     conn.commit()
     conn.close()
     logger.info("Database initialized successfully")
@@ -285,6 +299,7 @@ class EstateIQAgent:
         - Always provides actionable insights
         - Asks clarifying questions when needed
         
+        Focus on helping first-time homebuyers and families find their perfect home in Westlake Village and Thousand Oaks, CA.
         Always provide specific, actionable advice and ask follow-up questions to better understand user needs.
         """
     
@@ -477,6 +492,84 @@ def chat():
         logger.error(f"Error in chat: {str(e)}")
         return jsonify({"error": "I apologize, but I encountered an error. Please try again."}), 500
 
+@app.route('/api/capture-lead', methods=['POST'])
+def capture_lead():
+    """Capture lead email and track activity"""
+    try:
+        data = request.json
+        email = data.get('email', '').strip().lower()
+        session_id = data.get('session_id', '')
+        source = data.get('source', 'unknown')  # 'property_limit', 'ai_limit', 'manual'
+        
+        if not email or '@' not in email:
+            return jsonify({"success": False, "error": "Valid email is required"}), 400
+        
+        conn = sqlite3.connect('estateiq.db')
+        cursor = conn.cursor()
+        
+        # Try to insert or update lead
+        cursor.execute('''
+            INSERT INTO leads (email, session_id, source, last_activity)
+            VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(email) DO UPDATE SET
+                last_activity = CURRENT_TIMESTAMP,
+                session_id = excluded.session_id
+        ''', (email, session_id, source))
+        
+        conn.commit()
+        conn.close()
+        
+        logger.info(f"Lead captured: {email} from {source}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Email captured successfully",
+            "email": email
+        })
+        
+    except Exception as e:
+        logger.error(f"Error capturing lead: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to save email"}), 500
+
+@app.route('/api/track-activity', methods=['POST'])
+def track_activity():
+    """Track user activity (properties viewed, AI messages sent)"""
+    try:
+        data = request.json
+        session_id = data.get('session_id', '')
+        activity_type = data.get('type', '')  # 'property_view', 'ai_message'
+        
+        if not session_id:
+            return jsonify({"success": False, "error": "Session ID required"}), 400
+        
+        conn = sqlite3.connect('estateiq.db')
+        cursor = conn.cursor()
+        
+        # Update activity count for this session's lead
+        if activity_type == 'property_view':
+            cursor.execute('''
+                UPDATE leads 
+                SET properties_viewed = properties_viewed + 1,
+                    last_activity = CURRENT_TIMESTAMP
+                WHERE session_id = ?
+            ''', (session_id,))
+        elif activity_type == 'ai_message':
+            cursor.execute('''
+                UPDATE leads 
+                SET ai_messages_sent = ai_messages_sent + 1,
+                    last_activity = CURRENT_TIMESTAMP
+                WHERE session_id = ?
+            ''', (session_id,))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"success": True})
+        
+    except Exception as e:
+        logger.error(f"Error tracking activity: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/api/refresh-properties', methods=['POST'])
 def refresh_properties():
     """Manually refresh property cache"""
@@ -502,7 +595,7 @@ def refresh_properties():
 # Initialize database on module load
 try:
     init_db()
-    logger.info("EstateIQ initialized successfully with Realtor16 API integration")
+    logger.info("EstateIQ initialized successfully with Realtor16 API integration and lead capture")
 except Exception as e:
     logger.error(f"Error initializing EstateIQ: {str(e)}")
 
