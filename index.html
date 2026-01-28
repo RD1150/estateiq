@@ -831,21 +831,21 @@
             resultsCount.textContent = `${properties.length} properties found`;
 
             grid.innerHTML = properties.map((property, index) => `
-                <div class="property-card" onclick="trackPropertyView('${property.property_id}')">
-                    <img src="${property.primary_photo || 'https://via.placeholder.com/400x300?text=No+Image'}" 
-                         alt="${property.location.address.line}" 
+                <div class="property-card" onclick="trackPropertyView('${property.id}')">
+                    <img src="${property.photo_url || 'https://via.placeholder.com/400x300?text=No+Image'}" 
+                         alt="${property.address}" 
                          class="property-image"
                          onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
                     <div class="property-content">
-                        <div class="property-price">$${property.list_price.toLocaleString()}</div>
+                        <div class="property-price">$${property.price.toLocaleString()}</div>
                         <div class="property-address">
-                            ${property.location.address.line}<br>
-                            ${property.location.address.city}, ${property.location.address.state_code}
+                            ${property.address}<br>
+                            ${property.city}, ${property.state} ${property.zip_code}
                         </div>
                         <div class="property-details">
-                            <div class="property-detail">🛏️ ${property.description.beds || 'N/A'} beds</div>
-                            <div class="property-detail">🛁 ${property.description.baths || 'N/A'} baths</div>
-                            <div class="property-detail">📐 ${property.description.sqft ? property.description.sqft.toLocaleString() : 'N/A'} sqft</div>
+                            <div class="property-detail">🛏️ ${property.bedrooms || 'N/A'} beds</div>
+                            <div class="property-detail">🛁 ${property.bathrooms || 'N/A'} baths</div>
+                            <div class="property-detail">📐 ${property.square_feet ? property.square_feet.toLocaleString() : 'N/A'} sqft</div>
                         </div>
                         <div class="ai-prompts">
                             <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'overpriced')">Is this overpriced?</button>
@@ -918,13 +918,13 @@
             let question = '';
             switch(questionType) {
                 case 'overpriced':
-                    question = `Is ${property.location.address.line} priced fairly at $${property.list_price.toLocaleString()}?`;
+                    question = `Is ${property.address} priced fairly at $${property.price.toLocaleString()}?`;
                     break;
                 case 'compare':
-                    question = `How does ${property.location.address.line} compare to similar homes in ${property.location.address.city}?`;
+                    question = `How does ${property.address} compare to similar homes in ${property.city}?`;
                     break;
                 case 'neighborhood':
-                    question = `Tell me about the ${property.location.address.city} neighborhood near ${property.location.address.line}.`;
+                    question = `Tell me about the ${property.city} neighborhood near ${property.address}.`;
                     break;
             }
             
@@ -949,7 +949,7 @@
                     body: JSON.stringify({
                         session_id: sessionId,
                         activity_type: 'ai_question',
-                        property_id: property.property_id
+                        property_id: property.id
                     })
                 }).catch(err => console.error('Tracking error:', err));
                 
