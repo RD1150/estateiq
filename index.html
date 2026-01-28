@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EstateIQ - Market Intelligence for Westlake Village & Thousand Oaks</title>
-    <meta name="description" content="EstateIQ - Real estate intelligence powered by live data and AI for Westlake Village and Thousand Oaks, CA">
+    <title>EstateIQ - Real-Time Market Intelligence for Westlake Village & Thousand Oaks</title>
+    <meta name="description" content="Live listings, pricing trends, and local insights powered by real property data">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,316 +17,298 @@
         }
 
         :root {
-            --primary-cream: #f5f5dc;
-            --primary-beige: #f8f4e6;
-            --accent-gold: #d4af37;
-            --accent-gold-light: #f4e4bc;
-            --text-dark: #1a1a1a;
-            --text-light: #ffffff;
-            --background-light: #faf8f3;
-            --background-dark: #1a1a1a;
-            --shadow-soft: 0 10px 30px rgba(212, 175, 55, 0.15);
-            --shadow-strong: 0 20px 60px rgba(212, 175, 55, 0.25);
-            --gradient-primary: linear-gradient(135deg, #faf8f3 0%, #f5f5dc 50%, #f8f4e6 100%);
-            --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
-            --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --color-white: #FFFFFF;
+            --color-background: #F8F9FA;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #6B7280;
+            --color-accent-gold: #C19A6B;
+            --color-accent-blue: #2563EB;
+            --color-border: #E5E7EB;
+            
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 64px;
+            --spacing-2xl: 96px;
+            
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--background-light);
-            color: var(--text-dark);
+            font-family: var(--font-family);
+            background: var(--color-white);
+            color: var(--color-text-primary);
             line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Header */
-        .header {
-            background: var(--background-dark);
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid var(--accent-gold);
+        header {
+            background: var(--color-white);
+            border-bottom: 1px solid var(--color-border);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
         }
 
-        .header-content {
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--spacing-md) var(--spacing-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-cream);
+            text-decoration: none;
+            color: var(--color-text-primary);
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-gold);
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            background: var(--color-accent-gold);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--background-dark);
-            font-size: 1.2rem;
-            box-shadow: var(--shadow-soft);
+            font-size: 20px;
         }
 
-        .tagline {
-            font-size: 0.9rem;
-            color: var(--accent-gold);
-            font-weight: 500;
-            margin-left: 52px;
-            margin-top: -5px;
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
         }
 
         /* Hero Section */
-        .hero-section {
+        .hero {
+            padding: var(--spacing-2xl) 0;
             text-align: center;
-            padding: 3rem 0 2rem;
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
         }
 
         .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-dark);
-            opacity: 0.8;
-            margin-bottom: 0.5rem;
-        }
-
-        .live-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--accent-gold-light);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-top: 1rem;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto var(--spacing-lg);
         }
 
         /* Search Section */
         .search-section {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: var(--shadow-soft);
+            background: var(--color-background);
+            padding: var(--spacing-xl) 0;
         }
 
-        .section-header {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 1.5rem;
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
             text-align: center;
         }
 
         .search-form {
+            background: var(--color-white);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
-            gap: 1rem;
-            align-items: end;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: var(--spacing-xs);
         }
 
         .form-label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-secondary);
         }
 
         .form-input {
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--primary-cream);
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            padding: 12px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: var(--font-family);
+            transition: all 0.2s;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: var(--accent-gold);
+            border-color: var(--color-text-primary);
         }
 
         .search-button {
-            padding: 0.75rem 2rem;
-            background: var(--gradient-gold);
-            color: var(--background-dark);
+            width: 100%;
+            padding: 14px;
+            background: var(--color-text-primary);
+            color: var(--color-white);
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
+            font-family: var(--font-family);
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-soft);
+            transition: all 0.2s;
         }
 
         .search-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-strong);
+            background: #000000;
+            transform: translateY(-1px);
         }
 
         /* Properties Section */
         .properties-section {
-            margin: 3rem 0;
+            padding: var(--spacing-xl) 0;
         }
 
-        .properties-header {
+        .section-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            align-items: baseline;
+            margin-bottom: var(--spacing-lg);
         }
 
-        .properties-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
+        .section-title {
+            font-size: 36px;
+            font-weight: 600;
+            line-height: 1.2;
         }
 
         .results-count {
-            font-size: 1rem;
-            color: var(--text-dark);
-            opacity: 0.6;
+            font-size: 16px;
+            color: var(--color-text-secondary);
         }
 
         .properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: var(--spacing-md);
         }
 
         .property-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--color-white);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--shadow-soft);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             cursor: pointer;
+            border: 1px solid var(--color-border);
         }
 
         .property-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
         }
 
         .property-image {
             width: 100%;
-            height: 220px;
+            height: 240px;
             object-fit: cover;
-            background: var(--primary-cream);
+            background: var(--color-background);
         }
 
         .property-content {
-            padding: 1.5rem;
+            padding: var(--spacing-md);
         }
 
         .property-price {
-            font-size: 1.8rem;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--accent-gold);
-            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
         }
 
         .property-address {
-            font-size: 1rem;
-            color: var(--text-dark);
-            margin-bottom: 1rem;
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-sm);
         }
 
         .property-details {
             display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            opacity: 0.7;
+            gap: var(--spacing-sm);
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--color-border);
         }
 
         .property-detail {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 4px;
         }
 
         /* AI Prompts */
         .ai-prompts {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--primary-cream);
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
         }
 
         .ai-prompt-btn {
-            padding: 0.4rem 0.8rem;
-            background: var(--background-light);
-            border: 1px solid var(--accent-gold-light);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--text-dark);
+            padding: 8px 12px;
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: var(--font-family);
+            color: var(--color-text-primary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .ai-prompt-btn:hover {
-            background: var(--accent-gold-light);
-            transform: translateY(-1px);
+            background: var(--color-text-primary);
+            color: var(--color-white);
+            border-color: var(--color-text-primary);
         }
 
-        /* AI Response Section */
         .ai-response {
-            background: var(--accent-gold-light);
-            border-left: 4px solid var(--accent-gold);
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 10px;
+            background: var(--color-background);
+            border-left: 3px solid var(--color-accent-gold);
+            padding: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            border-radius: 6px;
             display: none;
         }
 
@@ -333,90 +318,151 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .ai-response-header {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            gap: 6px;
         }
 
         .ai-response-text {
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text-secondary);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--color-background);
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+            margin: var(--spacing-xl) 0;
+        }
+
+        .cta-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        .cta-button {
+            padding: 16px 32px;
+            background: var(--color-text-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            background: #000000;
+            transform: translateY(-2px);
         }
 
         /* Loading States */
         .loading {
             text-align: center;
-            padding: 3rem;
+            padding: var(--spacing-xl);
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--primary-cream);
-            border-top-color: var(--accent-gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: var(--spacing-md);
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .skeleton-card {
+            background: var(--color-white);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+        }
+
+        .skeleton-image {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(90deg, var(--color-background) 0%, #E5E7EB 50%, var(--color-background) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-content {
+            padding: var(--spacing-md);
+        }
+
+        .skeleton-line {
+            height: 20px;
+            background: linear-gradient(90deg, var(--color-background) 0%, #E5E7EB 50%, var(--color-background) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .skeleton-line.short {
+            width: 60%;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         .loading-text {
-            margin-top: 1rem;
-            color: var(--text-dark);
-            opacity: 0.6;
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-sm);
         }
 
-        /* CTA Section */
-        .cta-section {
-            background: var(--gradient-dark);
-            color: var(--text-light);
-            padding: 3rem 2rem;
-            border-radius: 20px;
+        /* Error State */
+        .error-state {
             text-align: center;
-            margin: 3rem 0;
+            padding: var(--spacing-xl);
+            color: var(--color-text-secondary);
         }
 
-        .cta-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .cta-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            margin-bottom: 2rem;
-        }
-
-        .cta-button {
-            padding: 1rem 2.5rem;
-            background: var(--gradient-gold);
-            color: var(--background-dark);
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+        .error-title {
+            font-size: 18px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-soft);
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
         }
 
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-strong);
+        .error-message {
+            font-size: 16px;
+            margin-bottom: var(--spacing-sm);
         }
 
-        /* Email Modal */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -424,150 +470,160 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.2s ease;
         }
 
         .modal-overlay.active {
             display: flex;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: var(--spacing-lg);
             max-width: 500px;
             width: 90%;
-            box-shadow: var(--shadow-strong);
             animation: slideUp 0.3s ease;
             position: relative;
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 24px;
             cursor: pointer;
-            color: var(--text-dark);
-            opacity: 0.5;
-            transition: opacity 0.3s ease;
+            color: var(--color-text-secondary);
+            transition: color 0.2s;
         }
 
         .modal-close:hover {
-            opacity: 1;
+            color: var(--color-text-primary);
         }
 
         .modal-icon {
-            font-size: 3rem;
+            font-size: 48px;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-sm);
         }
 
         .modal-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-dark);
+            font-size: 24px;
+            font-weight: 600;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-sm);
         }
 
         .modal-subtitle {
-            font-size: 1rem;
-            color: var(--text-dark);
-            opacity: 0.8;
+            font-size: 16px;
+            color: var(--color-text-secondary);
             text-align: center;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
         }
 
         .modal-benefits {
-            background: var(--background-light);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            background: var(--color-background);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
         }
 
         .modal-benefits ul {
             list-style: none;
-            padding: 0;
         }
 
         .modal-benefits li {
-            padding: 0.5rem 0;
-            color: var(--text-dark);
+            padding: var(--spacing-xs) 0;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: var(--spacing-xs);
+            font-size: 14px;
         }
 
         .modal-benefits li:before {
             content: "✓";
-            color: var(--accent-gold);
+            color: var(--color-accent-gold);
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 16px;
         }
 
         .modal-form {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: var(--spacing-sm);
         }
 
         .modal-input {
-            padding: 1rem;
-            border: 2px solid var(--primary-cream);
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            padding: 14px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: var(--font-family);
+            transition: all 0.2s;
         }
 
         .modal-input:focus {
             outline: none;
-            border-color: var(--accent-gold);
+            border-color: var(--color-text-primary);
         }
 
         .modal-button {
-            padding: 1rem;
-            background: var(--gradient-gold);
-            color: var(--background-dark);
+            padding: 14px;
+            background: var(--color-text-primary);
+            color: var(--color-white);
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
+            font-family: var(--font-family);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .modal-button:hover {
-            transform: translateY(-2px);
+            background: #000000;
         }
 
         .modal-footer {
             text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            opacity: 0.6;
-            margin-top: 1rem;
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-sm);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 36px;
             }
 
-            .search-form {
+            .section-title {
+                font-size: 28px;
+            }
+
+            .search-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -576,11 +632,9 @@
             }
 
             .section-header {
-                font-size: 1.5rem;
-            }
-
-            .properties-title {
-                font-size: 1.8rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-xs);
             }
         }
 
@@ -590,89 +644,102 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div>
-                    <div class="logo">
-                        <div class="logo-icon">🏠</div>
-                        EstateIQ
-                    </div>
-                    <div class="tagline">Market Intelligence for Westlake Village & Thousand Oaks</div>
-                </div>
-            </div>
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-text">EstateIQ</span>
+            </a>
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="container">
-            <!-- Hero Section -->
-            <div class="hero-section">
-                <h1 class="hero-title">Explore Live Market Data</h1>
-                <p class="hero-subtitle">Real estate intelligence powered by AI and live property data</p>
-                <div class="live-badge">
-                    <span class="live-dot"></span>
-                    Live data powered by RapidAPI
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1 class="hero-title">Real-Time Market Intelligence for Westlake Village & Thousand Oaks</h1>
+                <p class="hero-subtitle">Live listings, pricing trends, and local insights powered by real property data</p>
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="container">
+                <div class="search-container">
+                    <h2 class="search-title">Find Your Perfect Home</h2>
+                    <form class="search-form" onsubmit="searchProperties(event)">
+                        <div class="search-grid">
+                            <div class="form-group">
+                                <label class="form-label">City or ZIP Code</label>
+                                <input type="text" id="search-location" class="form-input" placeholder="Westlake Village, CA" value="Westlake Village, CA">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Min Price</label>
+                                <input type="number" id="search-min-price" class="form-input" placeholder="$500,000" value="500000">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Max Price</label>
+                                <input type="number" id="search-max-price" class="form-input" placeholder="$2,000,000" value="2000000">
+                            </div>
+                        </div>
+                        <button type="submit" class="search-button">Search Properties</button>
+                    </form>
                 </div>
             </div>
+        </section>
 
-            <!-- Search Section -->
-            <div class="search-section">
-                <h2 class="section-header">Find Your Perfect Home</h2>
-                <form class="search-form" onsubmit="searchProperties(event)">
-                    <div class="form-group">
-                        <label class="form-label">City or ZIP Code</label>
-                        <input type="text" id="search-location" class="form-input" placeholder="Westlake Village, CA" value="Westlake Village, CA">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Min Price</label>
-                        <input type="number" id="search-min-price" class="form-input" placeholder="$500,000" value="500000">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Max Price</label>
-                        <input type="number" id="search-max-price" class="form-input" placeholder="$2,000,000" value="2000000">
-                    </div>
-                    <button type="submit" class="search-button">Search</button>
-                </form>
-            </div>
-
-            <!-- Properties Section -->
-            <div class="properties-section">
-                <div class="properties-header">
-                    <h2 class="properties-title">Available Properties</h2>
+        <!-- Properties Section -->
+        <section class="properties-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Available Properties</h2>
                     <div class="results-count" id="results-count">Loading...</div>
                 </div>
                 <div class="properties-grid" id="properties-grid">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Fetching live property data...</div>
+                    <!-- Skeleton Loading State -->
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- CTA Section (Mid-page) -->
-            <div class="cta-section">
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
                 <h2 class="cta-title">Get Personalized Market Insights</h2>
                 <p class="cta-subtitle">Save your favorite properties and receive monthly market reports tailored to your preferences</p>
-                <button class="cta-button" onclick="showEmailModal('cta_midpage')">Get Started Free</button>
+                <button class="cta-button" onclick="showEmailModal('cta')">Create Free Account</button>
             </div>
-
-            <!-- More properties would continue here -->
-
-            <!-- CTA Section (Bottom) -->
-            <div class="cta-section">
-                <h2 class="cta-title">Ready to Find Your Perfect Home?</h2>
-                <p class="cta-subtitle">Create a free account to unlock unlimited access and personalized AI assistance</p>
-                <button class="cta-button" onclick="showEmailModal('cta_bottom')">Create Free Account</button>
-            </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Email Capture Modal -->
+    <!-- Email Modal -->
     <div id="email-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">×</button>
-            <div class="modal-icon">🎉</div>
+            <div class="modal-icon">🏠</div>
             <h2 class="modal-title">Unlock Full Market Intelligence</h2>
             <p class="modal-subtitle">Create a free account to access unlimited property data and personalized AI insights.</p>
             
@@ -680,7 +747,7 @@
                 <ul>
                     <li>Unlimited property browsing</li>
                     <li>Save and compare your favorites</li>
-                    <li>AI-powered market analysis per listing</li>
+                    <li>AI-powered market analysis</li>
                     <li>Personalized neighborhood insights</li>
                     <li>Monthly market trend reports</li>
                 </ul>
@@ -695,7 +762,7 @@
                     required
                 >
                 <button type="submit" id="modal-submit" class="modal-button">
-                    Get Unlimited Access
+                    Create Free Account
                 </button>
             </form>
 
@@ -746,11 +813,7 @@
                 displayProperties(currentProperties);
             } catch (error) {
                 console.error('Error loading properties:', error);
-                document.getElementById('properties-grid').innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: var(--text-dark);">
-                        <p>Unable to load properties. Please try again later.</p>
-                    </div>
-                `;
+                showErrorState();
             }
         }
 
@@ -760,11 +823,7 @@
             const resultsCount = document.getElementById('results-count');
             
             if (!properties || properties.length === 0) {
-                grid.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: var(--text-dark);">
-                        <p>No properties found. Try adjusting your search criteria.</p>
-                    </div>
-                `;
+                showErrorState();
                 resultsCount.textContent = '0 properties found';
                 return;
             }
@@ -781,7 +840,7 @@
                         <div class="property-price">$${property.list_price.toLocaleString()}</div>
                         <div class="property-address">
                             ${property.location.address.line}<br>
-                            ${property.location.address.city}, ${property.location.address.state_code} ${property.location.address.postal_code}
+                            ${property.location.address.city}, ${property.location.address.state_code}
                         </div>
                         <div class="property-details">
                             <div class="property-detail">🛏️ ${property.description.beds || 'N/A'} beds</div>
@@ -802,6 +861,17 @@
             `).join('');
         }
 
+        // Show error state
+        function showErrorState() {
+            const grid = document.getElementById('properties-grid');
+            grid.innerHTML = `
+                <div class="error-state" style="grid-column: 1 / -1;">
+                    <div class="error-title">Live listings are loading</div>
+                    <div class="error-message">This may take a moment. Market insights remain accessible.</div>
+                </div>
+            `;
+        }
+
         // Track property view
         function trackPropertyView(propertyId) {
             if (hasEmail) return;
@@ -809,7 +879,6 @@
             propertiesViewed++;
             localStorage.setItem('properties_viewed', propertiesViewed.toString());
             
-            // Track in backend
             fetch(`${API_BASE}/api/track-activity`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -849,13 +918,13 @@
             let question = '';
             switch(questionType) {
                 case 'overpriced':
-                    question = `Is ${property.location.address.line} priced fairly at $${property.list_price.toLocaleString()}? Analyze the price per square foot and compare to market averages.`;
+                    question = `Is ${property.location.address.line} priced fairly at $${property.list_price.toLocaleString()}?`;
                     break;
                 case 'compare':
-                    question = `How does ${property.location.address.line} compare to similar homes in ${property.location.address.city}? Consider size, price, and features.`;
+                    question = `How does ${property.location.address.line} compare to similar homes in ${property.location.address.city}?`;
                     break;
                 case 'neighborhood':
-                    question = `Tell me about the ${property.location.address.city} neighborhood near ${property.location.address.line}. What should homebuyers know?`;
+                    question = `Tell me about the ${property.location.address.city} neighborhood near ${property.location.address.line}.`;
                     break;
             }
             
@@ -874,7 +943,6 @@
                 const data = await response.json();
                 responseText.textContent = data.response;
                 
-                // Track AI question
                 fetch(`${API_BASE}/api/track-activity`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -895,20 +963,25 @@
         function searchProperties(event) {
             event.preventDefault();
             
-            const location = document.getElementById('search-location').value;
-            const minPrice = document.getElementById('search-min-price').value;
-            const maxPrice = document.getElementById('search-max-price').value;
-            
-            // Show loading
-            document.getElementById('properties-grid').innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
+            const grid = document.getElementById('properties-grid');
+            grid.innerHTML = `
+                <div class="loading" style="grid-column: 1 / -1;">
+                    <div class="skeleton-grid">
+                        ${Array(3).fill().map(() => `
+                            <div class="skeleton-card">
+                                <div class="skeleton-image"></div>
+                                <div class="skeleton-content">
+                                    <div class="skeleton-line"></div>
+                                    <div class="skeleton-line short"></div>
+                                    <div class="skeleton-line short"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
                     <div class="loading-text">Searching live market data...</div>
                 </div>
             `;
             
-            // In a real implementation, this would call the API with search parameters
-            // For now, we'll just reload the default properties
             setTimeout(loadProperties, 1000);
         }
 
@@ -923,10 +996,10 @@
             const subtitle = document.querySelector('.modal-subtitle');
             
             if (source === 'property_limit') {
-                title.textContent = "You've Viewed 5 Properties!";
-                subtitle.textContent = "You're clearly serious about finding your perfect home. Create a free account to continue browsing unlimited properties.";
+                title.textContent = "You've Viewed 5 Properties";
+                subtitle.textContent = "Create a free account to continue browsing unlimited properties and get personalized insights.";
             } else if (source === 'ai_limit') {
-                title.textContent = "You're Asking Great Questions!";
+                title.textContent = "You're Asking Great Questions";
                 subtitle.textContent = "Create a free account to continue getting AI-powered market intelligence for every listing.";
             }
             
@@ -978,7 +1051,7 @@
                     modalContent.innerHTML = `
                         <div style="text-align: center; padding: 2rem;">
                             <div class="modal-icon">✅</div>
-                            <h2 class="modal-title">Welcome to EstateIQ!</h2>
+                            <h2 class="modal-title">Welcome to EstateIQ</h2>
                             <p class="modal-subtitle">You now have unlimited access to market intelligence. Happy house hunting!</p>
                             <button class="modal-button" onclick="closeModal()">Start Exploring</button>
                         </div>
@@ -988,13 +1061,13 @@
                 } else {
                     alert('Error saving email. Please try again.');
                     submitButton.disabled = false;
-                    submitButton.textContent = 'Get Unlimited Access';
+                    submitButton.textContent = 'Create Free Account';
                 }
             } catch (error) {
                 console.error('Error submitting email:', error);
                 alert('Error connecting to server. Please try again.');
                 submitButton.disabled = false;
-                submitButton.textContent = 'Get Unlimited Access';
+                submitButton.textContent = 'Create Free Account';
             }
         }
     </script>
