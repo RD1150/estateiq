@@ -1,4 +1,3 @@
-
 """
 EstateIQ - Enhanced Real Estate AI Platform with Live API Data & Lead Capture
 Integrates Realtor16 RapidAPI for live property listings
@@ -79,6 +78,16 @@ def fetch_properties_from_api(location: str, limit: int = 20) -> List[Dict]:
         logger.error(f"Error fetching from API: {str(e)}")
         return []
 
+def get_high_res_photo(photo_url: str) -> str:
+    """Convert thumbnail image URL to higher resolution version"""
+    if not photo_url:
+        return ''
+    # Replace size suffix: -s (small) with -m (medium) or -od (original/large)
+    # Example: image-m3034688638s.jpg -> image-m3034688638od.jpg
+    if photo_url.endswith('s.jpg'):
+        return photo_url[:-5] + 'od.jpg'  # Replace 's.jpg' with 'od.jpg' for larger size
+    return photo_url
+
 def transform_api_property(api_prop: Dict) -> Dict:
     """Transform Realtor API property to EstateIQ format"""
     try:
@@ -121,7 +130,7 @@ def transform_api_property(api_prop: Dict) -> Dict:
             'rental_estimate': round(rental_estimate, 2),
             'cap_rate': round(cap_rate, 2),
             'created_at': datetime.now().isoformat(),
-            'photo_url': api_prop.get('primary_photo', {}).get('href', ''),
+            'photo_url': get_high_res_photo(api_prop.get('primary_photo', {}).get('href', '')),
             'property_url': api_prop.get('permalink', '')
         }
         
