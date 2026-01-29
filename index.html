@@ -98,21 +98,20 @@
 
         /* Hero Section */
         .hero {
-            padding: var(--spacing-2xl) 0;
+            padding: var(--spacing-2xl) 0 var(--spacing-xl);
             text-align: center;
         }
 
-        .hero-title {
+        .hero h1 {
             font-size: 48px;
             font-weight: 700;
             line-height: 1.1;
+            margin-bottom: var(--spacing-md);
             letter-spacing: -0.02em;
-            margin-bottom: var(--spacing-sm);
-            color: var(--color-text-primary);
         }
 
-        .hero-subtitle {
-            font-size: 18px;
+        .hero p {
+            font-size: 20px;
             color: var(--color-text-secondary);
             max-width: 600px;
             margin: 0 auto var(--spacing-lg);
@@ -124,74 +123,42 @@
             padding: var(--spacing-xl) 0;
         }
 
-        .search-container {
+        .search-form {
             max-width: 800px;
             margin: 0 auto;
-        }
-
-        .search-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-md);
-            text-align: center;
-        }
-
-        .search-form {
-            background: var(--color-white);
-            border-radius: 12px;
-            padding: var(--spacing-md);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .form-group {
             display: flex;
-            flex-direction: column;
-            gap: var(--spacing-xs);
+            gap: var(--spacing-sm);
         }
 
-        .form-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-        }
-
-        .form-input {
-            padding: 12px 16px;
+        .search-input {
+            flex: 1;
+            padding: 16px 20px;
+            font-size: 16px;
             border: 1px solid var(--color-border);
             border-radius: 8px;
-            font-size: 16px;
             font-family: var(--font-family);
-            transition: all 0.2s;
         }
 
-        .form-input:focus {
+        .search-input:focus {
             outline: none;
-            border-color: var(--color-text-primary);
+            border-color: var(--color-accent-gold);
         }
 
-        .search-button {
-            width: 100%;
-            padding: 14px;
-            background: var(--color-text-primary);
+        .search-btn {
+            padding: 16px 32px;
+            background: var(--color-accent-gold);
             color: var(--color-white);
             border: none;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
-            font-family: var(--font-family);
             cursor: pointer;
+            font-family: var(--font-family);
             transition: all 0.2s;
         }
 
-        .search-button:hover {
-            background: #000000;
+        .search-btn:hover {
+            background: #A67C52;
             transform: translateY(-1px);
         }
 
@@ -201,36 +168,34 @@
         }
 
         .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
             margin-bottom: var(--spacing-lg);
         }
 
         .section-title {
             font-size: 36px;
-            font-weight: 600;
-            line-height: 1.2;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
         }
 
-        .results-count {
-            font-size: 16px;
+        .section-subtitle {
+            font-size: 18px;
             color: var(--color-text-secondary);
         }
 
+        /* Property Grid */
         .properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: var(--spacing-md);
         }
 
         .property-card {
             background: var(--color-white);
+            border: 1px solid var(--color-border);
             border-radius: 12px;
             overflow: hidden;
             transition: all 0.3s;
             cursor: pointer;
-            border: 1px solid var(--color-border);
         }
 
         .property-card:hover {
@@ -250,7 +215,7 @@
         }
 
         .property-price {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--color-text-primary);
             margin-bottom: var(--spacing-xs);
@@ -265,16 +230,13 @@
         .property-details {
             display: flex;
             gap: var(--spacing-sm);
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            padding-bottom: var(--spacing-sm);
-            border-bottom: 1px solid var(--color-border);
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
         }
 
         .property-detail {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
         }
 
         /* AI Prompts */
@@ -282,7 +244,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: var(--spacing-xs);
-            margin-top: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
         }
 
         .ai-prompt-btn {
@@ -291,10 +253,10 @@
             border: 1px solid var(--color-border);
             border-radius: 6px;
             font-size: 13px;
-            font-family: var(--font-family);
-            color: var(--color-text-primary);
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: var(--font-family);
         }
 
         .ai-prompt-btn:hover {
@@ -303,319 +265,179 @@
             border-color: var(--color-text-primary);
         }
 
+        /* AI Response */
         .ai-response {
-            background: var(--color-background);
-            border-left: 3px solid var(--color-accent-gold);
-            padding: var(--spacing-sm);
-            margin-top: var(--spacing-sm);
-            border-radius: 6px;
             display: none;
+            background: var(--color-background);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-sm);
         }
 
         .ai-response.active {
             display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .ai-response-header {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-xs);
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .ai-response-text {
             font-size: 14px;
-            line-height: 1.5;
-            color: var(--color-text-secondary);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: var(--color-background);
-            padding: var(--spacing-xl) 0;
-            text-align: center;
-            margin: var(--spacing-xl) 0;
-        }
-
-        .cta-title {
-            font-size: 36px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .cta-subtitle {
-            font-size: 18px;
-            color: var(--color-text-secondary);
-            max-width: 600px;
-            margin: 0 auto var(--spacing-md);
-        }
-
-        .cta-button {
-            padding: 16px 32px;
-            background: var(--color-text-primary);
-            color: var(--color-white);
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: var(--font-family);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .cta-button:hover {
-            background: #000000;
-            transform: translateY(-2px);
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            white-space: pre-wrap;
         }
 
         /* Loading States */
         .loading {
             text-align: center;
             padding: var(--spacing-xl);
+            color: var(--color-text-secondary);
         }
 
         .skeleton-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: var(--spacing-md);
         }
 
         .skeleton-card {
-            background: var(--color-white);
+            background: var(--color-background);
             border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--color-border);
+            height: 400px;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        .skeleton-image {
-            width: 100%;
-            height: 240px;
-            background: linear-gradient(90deg, var(--color-background) 0%, #E5E7EB 50%, var(--color-background) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .skeleton-content {
-            padding: var(--spacing-md);
-        }
-
-        .skeleton-line {
-            height: 20px;
-            background: linear-gradient(90deg, var(--color-background) 0%, #E5E7EB 50%, var(--color-background) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .skeleton-line.short {
-            width: 60%;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .loading-text {
-            font-size: 16px;
-            color: var(--color-text-secondary);
-            margin-top: var(--spacing-sm);
-        }
-
-        /* Error State */
-        .error-state {
-            text-align: center;
-            padding: var(--spacing-xl);
-            color: var(--color-text-secondary);
-        }
-
-        .error-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-xs);
-            color: var(--color-text-primary);
-        }
-
-        .error-message {
-            font-size: 16px;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        /* Modal */
+        /* Email Modal */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
             z-index: 2000;
-            justify-content: center;
             align-items: center;
-            animation: fadeIn 0.2s ease;
+            justify-content: center;
         }
 
         .modal-overlay.active {
             display: flex;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
+        .modal {
             background: var(--color-white);
             border-radius: 16px;
             padding: var(--spacing-lg);
             max-width: 500px;
             width: 90%;
-            animation: slideUp 0.3s ease;
             position: relative;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .modal-close {
             position: absolute;
-            top: var(--spacing-sm);
-            right: var(--spacing-sm);
+            top: var(--spacing-md);
+            right: var(--spacing-md);
             background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
             color: var(--color-text-secondary);
-            transition: color 0.2s;
         }
 
         .modal-close:hover {
             color: var(--color-text-primary);
         }
 
-        .modal-icon {
-            font-size: 48px;
-            text-align: center;
-            margin-bottom: var(--spacing-sm);
-        }
-
         .modal-title {
             font-size: 24px;
-            font-weight: 600;
-            text-align: center;
+            font-weight: 700;
             margin-bottom: var(--spacing-sm);
         }
 
-        .modal-subtitle {
+        .modal-text {
             font-size: 16px;
             color: var(--color-text-secondary);
-            text-align: center;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .modal-benefits {
-            background: var(--color-background);
-            border-radius: 8px;
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .modal-benefits ul {
-            list-style: none;
-        }
-
-        .modal-benefits li {
-            padding: var(--spacing-xs) 0;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            font-size: 14px;
-        }
-
-        .modal-benefits li:before {
-            content: "✓";
-            color: var(--color-accent-gold);
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
         }
 
         .modal-input {
+            width: 100%;
             padding: 14px 16px;
+            font-size: 16px;
             border: 1px solid var(--color-border);
             border-radius: 8px;
-            font-size: 16px;
+            margin-bottom: var(--spacing-md);
             font-family: var(--font-family);
-            transition: all 0.2s;
         }
 
         .modal-input:focus {
             outline: none;
-            border-color: var(--color-text-primary);
+            border-color: var(--color-accent-gold);
         }
 
-        .modal-button {
+        .modal-btn {
+            width: 100%;
             padding: 14px;
-            background: var(--color-text-primary);
+            background: var(--color-accent-gold);
             color: var(--color-white);
             border: none;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
-            font-family: var(--font-family);
             cursor: pointer;
+            font-family: var(--font-family);
+        }
+
+        .modal-btn:hover {
+            background: #A67C52;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--color-text-primary);
+            color: var(--color-white);
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .cta-text {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .cta-btn {
+            padding: 16px 32px;
+            background: var(--color-accent-gold);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-family);
             transition: all 0.2s;
         }
 
-        .modal-button:hover {
-            background: #000000;
-        }
-
-        .modal-footer {
-            text-align: center;
-            font-size: 13px;
-            color: var(--color-text-secondary);
-            margin-top: var(--spacing-sm);
+        .cta-btn:hover {
+            background: #A67C52;
+            transform: translateY(-2px);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero-title {
+            .hero h1 {
                 font-size: 36px;
             }
 
@@ -623,27 +445,18 @@
                 font-size: 28px;
             }
 
-            .search-grid {
-                grid-template-columns: 1fr;
-            }
-
             .properties-grid {
                 grid-template-columns: 1fr;
             }
 
-            .section-header {
+            .search-form {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: var(--spacing-xs);
             }
-        }
-
-        .hidden {
-            display: none;
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="header-container">
             <a href="/" class="logo">
@@ -653,248 +466,227 @@
         </div>
     </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <h1 class="hero-title">Real-Time Market Intelligence for Conejo Valley Area</h1>
-                <p class="hero-subtitle">Live listings, pricing trends, and local insights powered by real property data</p>
-            </div>
-        </section>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Real-Time Market Intelligence for Conejo Valley Area</h1>
+            <p>Live listings, pricing analysis, and local insights powered by real property data</p>
+        </div>
+    </section>
 
-        <!-- Search Section -->
-        <section class="search-section">
-            <div class="container">
-                <div class="search-container">
-                    <h2 class="search-title">Find Your Perfect Home</h2>
-                    <form class="search-form" onsubmit="searchProperties(event)">
-                        <div class="search-grid">
-                            <div class="form-group">
-                                <label class="form-label">City or ZIP Code</label>
-                                <input type="text" id="search-location" class="form-input" placeholder="Conejo Valley Area, CA" value="Conejo Valley Area, CA">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Min Price</label>
-                                <input type="number" id="search-min-price" class="form-input" placeholder="$500,000" value="500000">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Max Price</label>
-                                <input type="number" id="search-max-price" class="form-input" placeholder="$2,000,000" value="2000000">
-                            </div>
-                        </div>
-                        <button type="submit" class="search-button">Search Properties</button>
-                    </form>
-                </div>
-            </div>
-        </section>
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <form class="search-form" onsubmit="searchProperties(event)">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Enter city, ZIP code, or neighborhood" 
+                    value="Conejo Valley Area, CA"
+                    id="search-input"
+                >
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+    </section>
 
-        <!-- Properties Section -->
-        <section class="properties-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Available Properties</h2>
-                    <div class="results-count" id="results-count">Loading...</div>
-                </div>
-                <div class="properties-grid" id="properties-grid">
-                    <!-- Skeleton Loading State -->
-                    <div class="skeleton-card">
-                        <div class="skeleton-image"></div>
-                        <div class="skeleton-content">
-                            <div class="skeleton-line"></div>
-                            <div class="skeleton-line short"></div>
-                            <div class="skeleton-line short"></div>
-                        </div>
-                    </div>
-                    <div class="skeleton-card">
-                        <div class="skeleton-image"></div>
-                        <div class="skeleton-content">
-                            <div class="skeleton-line"></div>
-                            <div class="skeleton-line short"></div>
-                            <div class="skeleton-line short"></div>
-                        </div>
-                    </div>
-                    <div class="skeleton-card">
-                        <div class="skeleton-image"></div>
-                        <div class="skeleton-content">
-                            <div class="skeleton-line"></div>
-                            <div class="skeleton-line short"></div>
-                            <div class="skeleton-line short"></div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Properties Section -->
+    <section class="properties-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Available Properties</h2>
+                <p class="section-subtitle" id="property-count">Loading properties...</p>
             </div>
-        </section>
+            <div class="properties-grid" id="properties-grid">
+                <!-- Properties will be loaded here -->
+            </div>
+        </div>
+    </section>
 
-        <!-- CTA Section -->
-        <section class="cta-section">
-            <div class="container">
-                <h2 class="cta-title">Get Personalized Market Insights</h2>
-                <p class="cta-subtitle">Save your favorite properties and receive monthly market reports tailored to your preferences</p>
-                <button class="cta-button" onclick="showEmailModal('cta')">Create Free Account</button>
-            </div>
-        </section>
-    </main>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Find Your Perfect Home?</h2>
+            <p class="cta-text">Create a free account to unlock unlimited access and personalized AI assistance</p>
+            <button class="cta-btn" onclick="showEmailModal('cta')">Get Started Free</button>
+        </div>
+    </section>
 
     <!-- Email Modal -->
-    <div id="email-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <div class="modal-icon">🏠</div>
-            <h2 class="modal-title">Unlock Full Market Intelligence</h2>
-            <p class="modal-subtitle">Create a free account to access unlimited property data and personalized AI insights.</p>
-            
-            <div class="modal-benefits">
-                <ul>
-                    <li>Unlimited property browsing</li>
-                    <li>Save and compare your favorites</li>
-                    <li>AI-powered market analysis</li>
-                    <li>Personalized neighborhood insights</li>
-                    <li>Monthly market trend reports</li>
-                </ul>
-            </div>
-
-            <form class="modal-form" onsubmit="submitEmail(event)">
-                <input 
-                    type="email" 
-                    id="email-input" 
-                    class="modal-input" 
-                    placeholder="Enter your email address" 
-                    required
-                >
-                <button type="submit" id="modal-submit" class="modal-button">
-                    Create Free Account
-                </button>
-            </form>
-
-            <div class="modal-footer">
-                No spam, ever. Unsubscribe anytime.
-            </div>
+    <div class="modal-overlay" id="email-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeEmailModal()">×</button>
+            <h3 class="modal-title">Get Unlimited Access</h3>
+            <p class="modal-text">Enter your email to continue exploring properties and get personalized market insights</p>
+            <input 
+                type="email" 
+                class="modal-input" 
+                placeholder="your@email.com" 
+                id="email-input"
+            >
+            <button class="modal-btn" onclick="submitEmail()">Continue</button>
         </div>
     </div>
 
     <script>
-        // Global variables
+        // Configuration
         const API_BASE = '';
-        let sessionId = localStorage.getItem('estateiq_session') || 'session_' + Date.now();
-        localStorage.setItem('estateiq_session', sessionId);
-        
-        let hasEmail = !!localStorage.getItem('user_email');
+        let sessionId = localStorage.getItem('session_id') || generateSessionId();
+        let hasEmail = localStorage.getItem('has_email') === 'true';
         let propertiesViewed = parseInt(localStorage.getItem('properties_viewed') || '0');
         let aiQuestionsAsked = parseInt(localStorage.getItem('ai_questions') || '0');
-        
         let currentProperties = [];
 
+        function generateSessionId() {
+            const id = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('session_id', id);
+            return id;
+        }
+
         // Load properties on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', () => {
             loadProperties();
-            
-            // Modal close handlers
-            const modalOverlay = document.getElementById('email-modal');
-            
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) {
-                    closeModal();
-                }
-            });
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-                    closeModal();
-                }
-            });
         });
 
-        // Load properties from API
+        // Load properties
         async function loadProperties() {
-            try {
-                const response = await fetch(`${API_BASE}/api/properties`);
-                const data = await response.json();
-                currentProperties = data.properties || [];
-                displayProperties(currentProperties);
-            } catch (error) {
-                console.error('Error loading properties:', error);
-                showErrorState();
-            }
-        }
-
-        // Display properties
-        function displayProperties(properties) {
             const grid = document.getElementById('properties-grid');
-            const resultsCount = document.getElementById('results-count');
+            const countEl = document.getElementById('property-count');
             
-            if (!properties || properties.length === 0) {
-                showErrorState();
-                resultsCount.textContent = '0 properties found';
-                return;
-            }
-
-            resultsCount.textContent = `${properties.length} properties found`;
-
-            grid.innerHTML = properties.map((property, index) => `
-                <div class="property-card" onclick="trackPropertyView('${property.id}')">
-                    <img src="${property.photo_url || 'https://via.placeholder.com/400x300?text=No+Image'}" 
-                         alt="${property.address}" 
-                         class="property-image"
-                         onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
-                    <div class="property-content">
-                        <div class="property-price">$${property.price.toLocaleString()}</div>
-                        <div class="property-address">
-                            ${property.address}<br>
-                            ${property.city}, ${property.state} ${property.zip_code}
-                        </div>
-                        <div class="property-details">
-                            <div class="property-detail">🛏️ ${property.bedrooms || 'N/A'} beds</div>
-                            <div class="property-detail">🛁 ${property.bathrooms || 'N/A'} baths</div>
-                            <div class="property-detail">📐 ${property.square_feet ? property.square_feet.toLocaleString() : 'N/A'} sqft</div>
-                        </div>
-                        <div class="ai-prompts">
-                            <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'overpriced')">Is this overpriced?</button>
-                            <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'compare')">Compare to nearby</button>
-                            <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'neighborhood')">About neighborhood</button>
-                        </div>
-                        <div class="ai-response" id="ai-response-${index}">
-                            <div class="ai-response-header">🤖 Market Intelligence</div>
-                            <div class="ai-response-text" id="ai-response-text-${index}">Loading...</div>
-                        </div>
+            // Show loading state
+            grid.innerHTML = `
+                <div class="loading" style="grid-column: 1 / -1;">
+                    <div class="skeleton-grid">
+                        ${Array(6).fill().map(() => '<div class="skeleton-card"></div>').join('')}
                     </div>
                 </div>
-            `).join('');
-        }
-
-        // Show error state
-        function showErrorState() {
-            const grid = document.getElementById('properties-grid');
-            grid.innerHTML = `
-                <div class="error-state" style="grid-column: 1 / -1;">
-                    <div class="error-title">Live listings are loading</div>
-                    <div class="error-message">This may take a moment. Market insights remain accessible.</div>
-                </div>
             `;
-        }
-
-        // Track property view
-        function trackPropertyView(propertyId) {
-            if (hasEmail) return;
             
-            propertiesViewed++;
-            localStorage.setItem('properties_viewed', propertiesViewed.toString());
-            
-            fetch(`${API_BASE}/api/track-activity`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    session_id: sessionId,
-                    activity_type: 'property_view',
-                    property_id: propertyId
-                })
-            }).catch(err => console.error('Tracking error:', err));
-            
-            if (propertiesViewed >= 5) {
-                showEmailModal('property_limit');
+            try {
+                const response = await fetch(`${API_BASE}/api/properties?location=Conejo Valley Area, CA&limit=20`);
+                const properties = await response.json();
+                
+                currentProperties = properties;
+                
+                if (properties.length === 0) {
+                    grid.innerHTML = `
+                        <div class="loading" style="grid-column: 1 / -1;">
+                            <p>Live listings are loading. This may take a moment.</p>
+                            <p style="margin-top: 16px; font-size: 14px;">Market insights remain accessible.</p>
+                        </div>
+                    `;
+                    countEl.textContent = 'Loading...';
+                    return;
+                }
+                
+                countEl.textContent = `${properties.length} properties found`;
+                
+                grid.innerHTML = properties.map((property, index) => `
+                    <div class="property-card" onclick="viewProperty(${index})">
+                        ${property.photo_url ? `<img src="${property.photo_url}" alt="${property.address}" class="property-image">` : '<div class="property-image"></div>'}
+                        <div class="property-content">
+                            <div class="property-price">$${property.price ? property.price.toLocaleString() : 'N/A'}</div>
+                            <div class="property-address">
+                                ${property.address}<br>
+                                ${property.city}, ${property.state} ${property.zip_code}
+                            </div>
+                            <div class="property-details">
+                                <div class="property-detail">🛏️ ${property.bedrooms || 'N/A'} beds</div>
+                                <div class="property-detail">🛁 ${property.bathrooms || 'N/A'} baths</div>
+                                <div class="property-detail">📐 ${property.square_feet ? property.square_feet.toLocaleString() : 'N/A'} sqft</div>
+                            </div>
+                            <div class="ai-prompts">
+                                <button class="ai-prompt-btn" onclick="analyzePricing(event, ${index})">Is this overpriced?</button>
+                                <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'compare')">Compare to nearby</button>
+                                <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'neighborhood')">About neighborhood</button>
+                            </div>
+                            <div class="ai-response" id="ai-response-${index}">
+                                <div class="ai-response-text" id="ai-response-text-${index}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                grid.innerHTML = `
+                    <div class="loading" style="grid-column: 1 / -1;">
+                        <p>Unable to load properties at the moment.</p>
+                        <p style="margin-top: 16px;">Please try again later.</p>
+                    </div>
+                `;
             }
         }
 
-        // Ask AI about property
+        // View property (track view)
+        function viewProperty(index) {
+            if (!hasEmail) {
+                propertiesViewed++;
+                localStorage.setItem('properties_viewed', propertiesViewed.toString());
+                
+                if (propertiesViewed >= 5) {
+                    showEmailModal('property_limit');
+                }
+            }
+        }
+
+        // Analyze pricing (NEW - uses pricing intelligence API)
+        async function analyzePricing(event, propertyIndex) {
+            event.stopPropagation();
+            
+            if (!hasEmail) {
+                aiQuestionsAsked++;
+                localStorage.setItem('ai_questions', aiQuestionsAsked.toString());
+                
+                if (aiQuestionsAsked >= 3) {
+                    showEmailModal('ai_limit');
+                    return;
+                }
+            }
+            
+            const property = currentProperties[propertyIndex];
+            const responseDiv = document.getElementById(`ai-response-${propertyIndex}`);
+            const responseText = document.getElementById(`ai-response-text-${propertyIndex}`);
+            
+            responseDiv.classList.add('active');
+            responseText.textContent = 'Analyzing comparable sales data...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/analyze-pricing`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        property: property
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    responseText.textContent = errorData.message || 'Unable to analyze pricing at this time.';
+                    return;
+                }
+                
+                const data = await response.json();
+                responseText.textContent = data.analysis;
+                
+                // Track activity
+                fetch(`${API_BASE}/api/track-activity`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        activity_type: 'pricing_analysis',
+                        property_id: property.id
+                    })
+                }).catch(err => console.error('Tracking error:', err));
+                
+            } catch (error) {
+                console.error('Pricing analysis error:', error);
+                responseText.textContent = 'Unable to analyze pricing right now. Please try again.';
+            }
+        }
+
+        // Ask AI about property (for other questions)
         async function askAI(event, propertyIndex, questionType) {
             event.stopPropagation();
             
@@ -917,9 +709,6 @@
             
             let question = '';
             switch(questionType) {
-                case 'overpriced':
-                    question = `Is ${property.address} priced fairly at $${property.price.toLocaleString()}?`;
-                    break;
                 case 'compare':
                     question = `How does ${property.address} compare to similar homes in ${property.city}?`;
                     break;
@@ -933,15 +722,15 @@
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        message: question,
-                        conversation_history: [],
-                        session_id: sessionId,
-                        property_context: property
+                        messages: [
+                            {role: 'user', content: question}
+                        ],
+                        property: property
                     })
                 });
                 
                 const data = await response.json();
-                responseText.textContent = data.response;
+                responseText.textContent = data.message;
                 
                 fetch(`${API_BASE}/api/track-activity`, {
                     method: 'POST',
@@ -962,114 +751,67 @@
         // Search properties
         function searchProperties(event) {
             event.preventDefault();
-            
-            const grid = document.getElementById('properties-grid');
-            grid.innerHTML = `
-                <div class="loading" style="grid-column: 1 / -1;">
-                    <div class="skeleton-grid">
-                        ${Array(3).fill().map(() => `
-                            <div class="skeleton-card">
-                                <div class="skeleton-image"></div>
-                                <div class="skeleton-content">
-                                    <div class="skeleton-line"></div>
-                                    <div class="skeleton-line short"></div>
-                                    <div class="skeleton-line short"></div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="loading-text">Searching live market data...</div>
-                </div>
-            `;
-            
-            setTimeout(loadProperties, 1000);
+            loadProperties();
         }
 
-        // Modal functions
+        // Email modal functions
         function showEmailModal(source) {
-            if (hasEmail) return;
-            
             const modal = document.getElementById('email-modal');
             modal.classList.add('active');
-            
-            const title = document.querySelector('.modal-title');
-            const subtitle = document.querySelector('.modal-subtitle');
-            
-            if (source === 'property_limit') {
-                title.textContent = "You've Viewed 5 Properties";
-                subtitle.textContent = "Create a free account to continue browsing unlimited properties and get personalized insights.";
-            } else if (source === 'ai_limit') {
-                title.textContent = "You're Asking Great Questions";
-                subtitle.textContent = "Create a free account to continue getting AI-powered market intelligence for every listing.";
-            }
-            
-            modal.dataset.source = source;
+            localStorage.setItem('modal_source', source);
         }
 
-        function closeModal() {
-            document.getElementById('email-modal').classList.remove('active');
+        function closeEmailModal() {
+            const modal = document.getElementById('email-modal');
+            modal.classList.remove('active');
         }
 
-        async function submitEmail(event) {
-            event.preventDefault();
-            
+        async function submitEmail() {
             const emailInput = document.getElementById('email-input');
-            const submitButton = document.getElementById('modal-submit');
             const email = emailInput.value.trim();
             
-            if (!email) return;
-            
-            submitButton.disabled = true;
-            submitButton.textContent = 'Saving...';
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
             
             try {
-                const modal = document.getElementById('email-modal');
-                const source = modal.dataset.source || 'manual';
-                
                 const response = await fetch(`${API_BASE}/api/capture-lead`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         email: email,
                         session_id: sessionId,
-                        source: source
+                        source: localStorage.getItem('modal_source') || 'unknown'
                     })
                 });
                 
-                const data = await response.json();
-                
-                if (data.success) {
+                if (response.ok) {
+                    localStorage.setItem('has_email', 'true');
                     localStorage.setItem('user_email', email);
                     hasEmail = true;
-                    
-                    localStorage.setItem('properties_viewed', '0');
-                    localStorage.setItem('ai_questions', '0');
-                    propertiesViewed = 0;
-                    aiQuestionsAsked = 0;
-                    
-                    const modalContent = document.querySelector('.modal-content');
-                    modalContent.innerHTML = `
-                        <div style="text-align: center; padding: 2rem;">
-                            <div class="modal-icon">✅</div>
-                            <h2 class="modal-title">Welcome to EstateIQ</h2>
-                            <p class="modal-subtitle">You now have unlimited access to market intelligence. Happy house hunting!</p>
-                            <button class="modal-button" onclick="closeModal()">Start Exploring</button>
-                        </div>
-                    `;
-                    
-                    setTimeout(closeModal, 3000);
-                } else {
-                    alert('Error saving email. Please try again.');
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Create Free Account';
+                    closeEmailModal();
+                    alert('Thank you! You now have unlimited access.');
                 }
             } catch (error) {
                 console.error('Error submitting email:', error);
-                alert('Error connecting to server. Please try again.');
-                submitButton.disabled = false;
-                submitButton.textContent = 'Create Free Account';
+                alert('Something went wrong. Please try again.');
             }
         }
+
+        // Close modal on overlay click
+        document.getElementById('email-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'email-modal') {
+                closeEmailModal();
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeEmailModal();
+            }
+        });
     </script>
 </body>
 </html>
