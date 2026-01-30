@@ -1,300 +1,210 @@
-[README.md](https://github.com/user-attachments/files/24540185/README.md)
-# 🏠 EstateIQ - Intelligence Meets Wealth
+🏠 EstateIQ — Real Estate Market Intelligence
 
-**A modern, intelligent real estate application that revolutionizes property discovery and investment analysis.**
+EstateIQ is an AI-powered real estate market intelligence layer designed to help users understand price positioning, market context, and tradeoffs—before they act.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.3-green.svg)](https://flask.palletsprojects.com/)
-[![AI Powered](https://img.shields.io/badge/AI-Powered-purple.svg)](https://openai.com/)
+EstateIQ does not replace IDX, inspections, or professional judgment.
+It provides opinionated, data-backed market interpretation with clear assumptions.
 
----
+🌟 Overview
 
-## 🌟 **Overview**
+EstateIQ helps buyers, sellers, agents, and investors answer a critical question:
 
-EstateIQ is an AI-powered real estate platform that combines beautiful design with intelligent property analysis. Built for real estate professionals, investors, and home buyers, EstateIQ provides ChatGPT-style conversational AI, comprehensive property analytics, and data-driven investment insights.
+“What is the market actually saying here?”
 
-**Live Demo:** Coming soon at [EstateIQ.app](https://estateiq.app)
+Instead of offering raw listings or absolute judgments, EstateIQ interprets price signals, market positioning, and leverage implications using publicly available data—while explicitly acknowledging uncertainty and limitations.
 
----
+🧠 Product Philosophy
 
-## ✨ **Key Features**
+IDX shows inventory.
+EstateIQ explains what it means.
 
-### 🤖 **AI-Powered Intelligence**
-- **ChatGPT-Style Conversation** - Natural language property search and advice
-- **Smart Property Scoring** - AI-calculated investment ratings (1-10 scale)
-- **Intent Analysis** - Understands user preferences and buying signals
-- **Contextual Memory** - Remembers conversation history for personalized recommendations
+EstateIQ evaluates pricing signals relative to the market, not the intrinsic quality or condition of a home.
 
-### 🏡 **Comprehensive Property Data**
-- **Real-Time Listings** - Integration with RentCast API and Redfin data
-- **Investment Analysis** - Cap rates, ROI calculations, rental estimates
-- **Market Trends** - Rising/Stable/Declining indicators
-- **Neighborhood Insights** - School ratings, walkability scores, crime data
+It is built to:
 
-### 📊 **Advanced Analytics**
-- **Market Overview Dashboard** - Average prices, AI scores, days on market
-- **City Comparisons** - Multi-city market analysis
-- **Economic Indicators** - Interest rates, market conditions
-- **Predictive Insights** - AI-generated market forecasts
+Reduce confusion
 
-### 💰 **Lead Generation**
-- **User Engagement Tracking** - Capture search preferences and intent
-- **Contact Forms** - Direct lead submission for agents
-- **Email Capture** - Property alerts and newsletters
-- **CRM Ready** - Integration-ready for lead management
+Increase decision confidence
 
-### 🎨 **Beautiful Design**
-- **Metallic Mint/Sage Green Theme** - Fresh, wealthy, professional aesthetic
-- **Responsive Layout** - Perfect on desktop, tablet, and mobile
-- **Smooth Animations** - Premium user experience
-- **Accessible** - WCAG compliant design
+Help users ask better questions
 
----
+Support informed next steps
 
-## 🛠️ **Tech Stack**
+✅ What EstateIQ Does
 
-### **Frontend**
-- **React 19** - Modern UI framework
-- **Vanilla JavaScript** - No build tools required for quick deployment
-- **CSS3** - Custom styling with gradients and animations
-- **Responsive Design** - Mobile-first approach
+EstateIQ analyzes:
 
-### **Backend**
-- **Flask 2.3** - Python web framework
-- **SQLite** - Embedded database (PostgreSQL ready)
-- **OpenAI API** - ChatGPT-style AI capabilities
-- **RentCast API** - Real estate property data
-- **CORS Enabled** - Frontend-backend communication
+Price relative to recent comparable sales
 
-### **Deployment**
-- **Vercel** - Frontend hosting (recommended)
-- **Heroku/Railway** - Backend hosting options
-- **GitHub Actions** - CI/CD ready
+Price-per-square-foot vs local norms
 
----
+Market positioning (aligned / aggressive / conservative)
 
-## 🚀 **Quick Start**
+Buyer and seller leverage implications
 
-### **Prerequisites**
-- Python 3.11+
-- Node.js 18+ (optional, for development)
-- OpenAI API key
-- RentCast API key (optional, 50 free calls/month)
+Local market trends and context
 
-### **Installation**
+EstateIQ helps users:
 
-#### **1. Clone the Repository**
-```bash
-git clone https://github.com/RD1150/estateiq-vercel.git
-cd estateiq-vercel
-```
+Understand risk and tradeoffs
 
-#### **2. Backend Setup**
-```bash
-cd backend
+Frame decisions responsibly
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+Prepare for conversations with agents, sellers, or buyers
 
-# Install dependencies
-pip install -r requirements.txt
+🚫 What EstateIQ Does NOT Do
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env and add your API keys
+EstateIQ does not:
 
-# Run the backend
-python app.py
-```
+Judge interior condition or build quality
 
-Backend will run on `http://localhost:5000`
+Guarantee value or outcomes
 
-#### **3. Frontend Setup**
-```bash
-cd frontend
+Recommend buying or avoiding a property
 
-# Serve with Python (simple option)
-python -m http.server 8080
+Predict appreciation or future prices
 
-# OR use Node.js http-server
-npx http-server -p 8080
-```
+Replace inspections or professional advice
 
-Frontend will run on `http://localhost:8080`
+⚖️ Opinionated Intelligence with Guardrails
 
-#### **4. Open Your Browser**
-Navigate to `http://localhost:8080` and start exploring EstateIQ!
+Neutral AI feels unhelpful.
+Absolute AI creates liability.
 
----
+EstateIQ provides opinionated, market-relative analysis with explicit assumptions.
 
-## 📁 **Project Structure**
+Prohibited Language
 
-```
-estateiq-vercel/
-├── backend/
-│   ├── app.py                 # Main Flask application
-│   ├── data_integrator.py     # Real estate data integration
-│   ├── requirements.txt       # Python dependencies
-│   ├── .env.example          # Environment variables template
-│   └── estateiq.db           # SQLite database (auto-created)
-│
-├── frontend/
-│   └── index.html            # Single-page application
-│
-├── README.md                 # This file
-└── LICENSE                   # MIT License
-```
+EstateIQ must never state:
 
----
+“This is a good buy”
 
-## 🔑 **Environment Variables**
+“This is a bad deal”
 
-Create a `.env` file in the `backend/` directory:
+“This home is overpriced”
 
-```env
-# OpenAI API for ChatGPT-style AI
-OPENAI_API_KEY=your_openai_api_key_here
+“You should buy / avoid this property”
 
-# RentCast API for property data (optional)
-RENTCAST_API_KEY=your_rentcast_api_key_here
+These imply certainty and full knowledge EstateIQ does not have.
 
-# Flask configuration
-FLASK_ENV=development
-FLASK_DEBUG=True
-```
+🗣️ Approved Market Language
 
-### **Getting API Keys:**
-- **OpenAI API**: [platform.openai.com](https://platform.openai.com/)
-- **RentCast API**: [rentcast.io](https://rentcast.io/) (50 free calls/month)
+EstateIQ uses conditional, market-relative phrasing, such as:
 
----
+“Priced above the typical range for similar homes”
 
-## 🌐 **Deployment**
+“Positioned at the higher end of recent comparable sales”
 
-### **Deploy to Vercel (Frontend)**
+“This price assumes strong condition or unique features”
 
-1. **Connect GitHub Repository**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your `estateiq-vercel` repository
-   - Set root directory to `frontend`
+“From a buyer perspective, this pricing limits leverage”
 
-2. **Configure Build Settings**
-   - Framework Preset: Other
-   - Build Command: (leave empty)
-   - Output Directory: `.`
+📌 Required Assumptions
 
-3. **Deploy!**
-   - Your frontend will be live at `your-project.vercel.app`
+All EstateIQ analysis:
 
-### **Deploy Backend (Railway/Heroku)**
+Uses publicly available market data
 
-#### **Railway:**
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
+Assumes average interior condition
 
-# Login and deploy
-railway login
-cd backend
-railway init
-railway up
-```
+Standard assumption statement:
 
-#### **Heroku:**
-```bash
-# Install Heroku CLI
-# Create Procfile in backend/
-echo "web: gunicorn app:app" > Procfile
+“This analysis is based on publicly available market data and assumes average condition. Interior condition, upgrades, and seller motivation can materially affect value.”
 
-# Deploy
-heroku create estateiq-backend
-git subtree push --prefix backend heroku main
-```
+🏗️ Handling Condition Uncertainty
 
-### **Connect Frontend to Backend**
-Update the `API_BASE` constant in `frontend/index.html`:
-```javascript
-const API_BASE = 'https://your-backend-url.com';
-```
+EstateIQ never infers interior condition.
 
----
+Instead, it:
 
-## 💰 **Monetization Strategies**
+Treats condition as a variable
 
-EstateIQ is designed as a **lead generation platform** with multiple revenue streams:
+Explains how condition impacts pricing
 
-### **For Real Estate Agents/Brokers:**
-- **Lead Sales**: $20-100 per qualified lead
-- **Subscriptions**: $99-499/month for unlimited leads
-- **Commission Splits**: 2-6% of closed transactions
-- **Featured Listings**: Premium property placement
+Quantifies when appropriate
 
-### **For Investors:**
-- **Premium Analytics**: $49-199/month
-- **Market Reports**: Paid detailed analysis
-- **Deal Alerts**: Investment opportunity notifications
+Example:
 
-### **For General Users:**
-- **Freemium Model**: Basic free, premium features paid
-- **Affiliate Commissions**: Mortgage, insurance, services
-- **White-Label**: License to brokerages
+“In this price range, condition typically explains price differences of approximately 5–15%.”
 
-**Revenue Potential**: $100K-$10M+ annually
+🧩 Standard Analysis Structure
 
----
+All EstateIQ responses follow this structure:
 
-## 📊 **Market Opportunity**
+Market signal (price positioning)
 
-- **AI Real Estate Market**: $988+ billion by 2029
-- **Lead Generation**: $20-100 per lead
-- **Subscription Revenue**: Recurring monthly income
-- **Proven Demand**: Zillow, Redfin, Canary AI success
+Assumptions stated
 
----
+Interpretation (buyer/seller leverage)
 
-## 🤝 **Contributing**
+Suggested next steps for validation
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+🔗 Relationship to IDX
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+IDX remains the primary inventory browsing experience
 
----
+EstateIQ provides interpretation and context
 
-## 📝 **License**
+EstateIQ complements IDX—it does not replace it
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+🛠️ Tech Stack
+Frontend
 
----
+React
 
-## 🙏 **Acknowledgments**
+Vanilla JavaScript
 
-- **OpenAI** - ChatGPT-style AI capabilities
-- **RentCast** - Real estate property data
-- **Redfin** - Market analytics data
-- **React Community** - Frontend framework
+CSS3
 
----
+Responsive, mobile-first design
 
-## 📧 **Contact**
+Backend
 
-- **GitHub**: [@RD1150](https://github.com/RD1150)
-- **Website**: [EstateIQ.app](https://estateiq.app) (coming soon)
-- **Issues**: [GitHub Issues](https://github.com/RD1150/estateiq-vercel/issues)
+Flask
 
----
+SQLite (PostgreSQL-ready)
 
-## ⭐ **Star This Repo!**
+OpenAI API (LLM-based analysis)
 
-If you find EstateIQ useful, please consider giving it a star on GitHub! It helps others discover the project.
+RentCast API (property & market data)
 
----
+🚀 Quick Start
 
-**Built with ❤️ for the real estate community**
+(Setup instructions unchanged — safe to keep as-is)
 
-*EstateIQ - Intelligence Meets Wealth* 🏠✨
+🧪 Definition of “Smart”
+
+EstateIQ is smart when it:
+
+Names uncertainty clearly
+
+Explains tradeoffs honestly
+
+Frames risk and leverage responsibly
+
+Helps users decide what to validate next
+
+Smart ≠ certainty.
+Smart = experienced judgment with restraint.
+
+🎯 Completion Criteria
+
+EstateIQ is complete when:
+
+It feels confident, not neutral
+
+It avoids absolute claims
+
+It consistently frames market context
+
+It builds trust through transparency
+
+Further refinement beyond this point should stop.
+
+📜 License
+
+MIT License
+
+⭐ Internal Product Definition
+
+“EstateIQ helps users understand what the market is actually saying—before they act—using opinionated, data-backed price intelligence with clear assumptions.”
