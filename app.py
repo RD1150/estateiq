@@ -1,7 +1,6 @@
 """
-EstateIQ - Enhanced Real Estate AI Platform with Pricing Intelligence
-Integrates US Real Estate API for live property listings and comparable sales data
-Implements pricing intelligence tool behavior per implementation guide
+EstateIQ - Refined Real Estate Intelligence Platform
+Implements opinionated AI with guardrails, liability-safe language, and clear assumptions
 """
 
 from flask import Flask, request, jsonify, send_file
@@ -48,6 +47,60 @@ comps_cache = {}  # Cache for comparable sales by ZIP code
 
 # Conejo Valley Area ZIP codes
 CONEJO_VALLEY_ZIPS = ['91361', '91362', '91320', '91360', '91377', '91301', '93021', '93063', '91302']
+
+# ===== ESTATEIQ AI SYSTEM PROMPT (LIABILITY-SAFE) =====
+
+ESTATEIQ_SYSTEM_PROMPT = """You are EstateIQ, an AI-powered real estate analysis assistant.
+
+Your role is to provide objective, data-driven insights about residential real estate based solely on publicly available information, comparable sales data, price-per-square-foot metrics, market trends, and user-provided inputs.
+
+You are NOT a licensed appraiser, inspector, or financial advisor.
+
+You must follow these rules at all times:
+
+1. You do NOT make definitive judgments about property condition, structural integrity, or unseen features.
+2. You do NOT guarantee investment performance, appreciation, or profitability.
+3. You do NOT state whether a property is "good," "bad," "worth it," or "overpriced" as an absolute fact.
+4. You DO explain how a property compares to similar properties based on objective metrics.
+5. You DO clearly state assumptions and limitations when data is incomplete.
+
+### Valuation Logic Rules
+- Base comparisons on recent comparable sales when available.
+- Use price-per-square-foot comparisons within the same market or zip code.
+- Identify statistical deviations (above, below, or within local averages).
+- Frame conclusions as "relative to market data" rather than personal opinion.
+
+### When a Property Appears High or Low Priced
+- Use neutral language such as:
+  - "This price is above the recent average for similar homes in this area."
+  - "Comparable sales suggest a lower typical price range, assuming similar condition."
+- Always include a condition disclaimer:
+  - "Actual value may vary based on interior condition, upgrades, lot characteristics, or other factors not visible in public data."
+
+### Condition & Inspection Safeguards
+- If asked about condition, defects, or renovations:
+  - State that condition cannot be assessed without an in-person inspection.
+  - Recommend professional inspections or agent review without directing to a specific provider.
+
+### Investment & Deal Analysis
+- Provide scenario-based analysis only.
+- Use phrasing such as:
+  - "Based on current data, some buyers may view this as…"
+  - "From a data perspective, this pricing aligns / does not align with recent trends."
+- Never state that a user should or should not buy a property.
+
+### Tone & Style
+- Professional, neutral, calm, and analytical.
+- No hype, emojis, slang, or sales language.
+- Sound like an experienced real estate analyst, not a salesperson.
+
+### User Guidance
+- Encourage users to consult licensed professionals for final decisions.
+- Reinforce that EstateIQ is an informational tool, not a substitute for due diligence.
+
+If a user requests advice that exceeds these boundaries, politely reframe the response using data and disclaimers rather than refusing outright.
+
+Reminder: Always prioritize neutrality, data transparency, and disclaimers. Never provide absolute conclusions or personalized financial advice."""
 
 # ===== US REAL ESTATE API INTEGRATION =====
 
@@ -133,7 +186,8 @@ def calculate_market_metrics(sold_homes: List[Dict], subject_property: Dict) -> 
             'avg_price_per_sqft': int(statistics.mean(price_per_sqft_list)) if price_per_sqft_list else 0,
             'subject_price_per_sqft': int(subject_price_per_sqft),
             'avg_days_on_market': int(statistics.mean(days_on_market_list)) if days_on_market_list else 0,
-            'comp_count': len(sold_homes)
+            'comp_count': len(sold_homes),
+            'price_diff_pct': ((subject_price - statistics.median(sold_prices)) / statistics.median(sold_prices) * 100) if sold_prices else 0
         }
         
         return metrics
@@ -144,7 +198,7 @@ def calculate_market_metrics(sold_homes: List[Dict], subject_property: Dict) -> 
 
 
 def generate_pricing_analysis(property_data: Dict, market_metrics: Dict) -> str:
-    """Generate pricing analysis following the implementation guide framework"""
+    """Generate pricing analysis with liability-safe, market-relative language"""
     
     # Extract property info
     address = property_data.get('address', 'Unknown')
@@ -162,53 +216,63 @@ def generate_pricing_analysis(property_data: Dict, market_metrics: Dict) -> str:
     subject_price_sqft = market_metrics.get('subject_price_per_sqft', 0)
     avg_dom = market_metrics.get('avg_days_on_market', 0)
     comp_count = market_metrics.get('comp_count', 0)
+    price_diff_pct = market_metrics.get('price_diff_pct', 0)
     
-    # Calculate valuation range (±5% of median)
-    estimated_low = int(median_sold * 0.95)
-    estimated_high = int(median_sold * 1.05)
+    # Calculate valuation range (±5-7% of median to reflect condition variance)
+    estimated_low = int(median_sold * 0.93)
+    estimated_high = int(median_sold * 1.07)
     
-    # Determine verdict
-    price_diff_pct = ((list_price - median_sold) / median_sold * 100) if median_sold > 0 else 0
-    
+    # Determine market-relative positioning (NOT absolute verdicts)
     if price_diff_pct > 10:
-        verdict = "Likely Overpriced"
+        position = "above the typical range"
+        positioning_detail = "positioned at the higher end of recent comparable sales"
     elif price_diff_pct < -10:
-        verdict = "Potentially Underpriced"
+        position = "below the typical range"
+        positioning_detail = "positioned at the lower end of recent comparable sales"
     else:
-        verdict = "Fairly Priced"
+        position = "within the typical range"
+        positioning_detail = "aligned with recent comparable sales"
     
-    # Determine market behavior
+    # Market speed context
     if avg_dom > 60:
-        market_signal = "above average (slower market)"
+        market_context = "Properties in this area have been taking longer to sell, which may provide negotiation opportunities."
     elif avg_dom < 30:
-        market_signal = "below average (faster market)"
+        market_context = "Properties in this area are moving quickly, suggesting strong buyer demand."
     else:
-        market_signal = "average"
+        market_context = "Market absorption appears balanced based on recent sales velocity."
     
-    # Build response following exact framework
-    response = f"""**Pricing Snapshot**
-{address}, {city}, {state} {zip_code}
+    # Condition variance explanation
+    condition_note = "In this price range, condition typically explains price differences of approximately 5–15%. Extensive renovations, unique features, or deferred maintenance can materially affect value."
+    
+    # Build response with liability-safe language
+    response = f"""**Market Analysis: {address}**
+{city}, {state} {zip_code}
 List Price: ${list_price:,} | {beds} beds, {baths} baths, {sqft:,} sqft
 
-**Comparable Market Summary**
-Based on {comp_count} recent sales in {zip_code}:
+**Price Positioning**
+Based on {comp_count} recent comparable sales in {zip_code}:
 • Median sold price: ${median_sold:,}
-• Average $/sqft: ${avg_price_sqft}
-• Subject $/sqft: ${subject_price_sqft}
+• Typical $/sqft range: ${avg_price_sqft}
+• Subject property $/sqft: ${subject_price_sqft}
 
-**Market Behavior**
-Average days on market: {avg_dom} days ({market_signal})
-Subject property is priced {abs(price_diff_pct):.1f}% {'above' if price_diff_pct > 0 else 'below'} area median.
+This listing is priced {position} for similar homes in this area, {positioning_detail}.
+
+**Market Context**
+{market_context}
+
+Average days on market: {avg_dom} days
+Subject property is positioned {abs(price_diff_pct):.1f}% {'above' if price_diff_pct > 0 else 'below'} the area median.
 
 **EstateIQ Value Range**
 ${estimated_low:,} - ${estimated_high:,}
 
-**Verdict: {verdict}**
+This range reflects typical market variance and assumes average condition. {condition_note}
 
-**Confidence Note:** This analysis is based on recent comparable sales in the immediate area. Market conditions can vary by specific location and property features.
+**Important Assumptions**
+This analysis is based on publicly available market data and assumes average condition. Interior condition, upgrades, lot characteristics, and seller motivation can materially affect value. Professional inspection and agent consultation are recommended for final decision-making.
 
 ---
-*EstateIQ provides an AI-generated estimate based on market trends and is not an appraisal.*"""
+*EstateIQ provides data-driven market intelligence and is not a substitute for professional appraisal or inspection.*"""
     
     return response
 
@@ -349,8 +413,8 @@ def analyze_pricing():
         
         if not sold_homes:
             return jsonify({
-                'error': 'No comparable sales data available for this area',
-                'message': 'Unable to generate pricing analysis without recent sales data'
+                'error': 'Limited comparable data',
+                'message': 'Insufficient recent sales data is available for this area. A professional appraisal or agent consultation is recommended for accurate valuation.'
             }), 404
         
         # Calculate market metrics
@@ -378,35 +442,15 @@ def analyze_pricing():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    """AI chat endpoint with pricing intelligence"""
+    """AI chat endpoint with liability-safe intelligence"""
     try:
         data = request.json
         messages = data.get('messages', [])
         property_context = data.get('property', None)
         
-        # Build system prompt
-        system_prompt = """You are EstateIQ's Market Intelligence Assistant for the Conejo Valley Area (Westlake Village, Thousand Oaks, Agoura Hills, Newbury Park, Oak Park, Moorpark, Simi Valley, Calabasas).
-
-You are a pricing intelligence tool, NOT an educational chatbot. Your responses must be:
-- Analytical and decisive
-- Market-backed with numbers
-- Confident, not academic
-- Actionable with clear takeaways
-
-LANGUAGE RULES:
-- Never explain what a CMA is
-- Never ask users to supply comps
-- Never output neutral conclusions
-- Always include numbers or ranges
-
-When discussing properties, focus on:
-- Market positioning and pricing
-- Neighborhood characteristics
-- Investment potential
-- Buyer/seller market signals
-
-Be helpful, knowledgeable, and guide users toward informed decisions."""
-
+        # Build system prompt with property context
+        system_prompt = ESTATEIQ_SYSTEM_PROMPT
+        
         # Add property context if available
         if property_context:
             system_prompt += f"\n\nCurrent property context:\n{json.dumps(property_context, indent=2)}"

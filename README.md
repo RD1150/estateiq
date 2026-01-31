@@ -1,210 +1,382 @@
-🏠 EstateIQ — Real Estate Market Intelligence
+# EstateIQ
 
-EstateIQ is an AI-powered real estate market intelligence layer designed to help users understand price positioning, market context, and tradeoffs—before they act.
+**Intelligence Meets Wealth**
 
-EstateIQ does not replace IDX, inspections, or professional judgment.
-It provides opinionated, data-backed market interpretation with clear assumptions.
+EstateIQ is an AI-powered real estate intelligence platform designed to help users understand price signals, market context, and tradeoffs before making decisions in the Conejo Valley Area.
 
-🌟 Overview
+## Product Philosophy
 
-EstateIQ helps buyers, sellers, agents, and investors answer a critical question:
+EstateIQ is **not** a home search tool or Zillow replacement.
 
-“What is the market actually saying here?”
+EstateIQ is a **market intelligence layer** that provides:
+- Data-driven price positioning analysis
+- Comparable sales context
+- Market behavior insights
+- Risk and leverage framing
 
-Instead of offering raw listings or absolute judgments, EstateIQ interprets price signals, market positioning, and leverage implications using publicly available data—while explicitly acknowledging uncertainty and limitations.
+**The product's value is judgment and clarity, not raw data or listings.**
 
-🧠 Product Philosophy
+---
 
-IDX shows inventory.
-EstateIQ explains what it means.
+## Core Principles
 
-EstateIQ evaluates pricing signals relative to the market, not the intrinsic quality or condition of a home.
+### 1. Opinionated AI with Guardrails
 
-It is built to:
+EstateIQ provides confident, analytical insights while maintaining clear liability boundaries.
 
-Reduce confusion
+**We NEVER say:**
+- "This is a good buy"
+- "This is a bad deal"
+- "This home is overpriced"
+- "You should buy/avoid this property"
 
-Increase decision confidence
+**We DO say:**
+- "Priced above the typical range for similar homes"
+- "Positioned at the higher end of recent comparable sales"
+- "This price assumes strong condition or unique features"
+- "From a buyer perspective, this pricing limits leverage"
 
-Help users ask better questions
+### 2. Assumption Transparency
 
-Support informed next steps
+Every analysis clearly states:
+- Based on publicly available market data
+- Assumes average condition
+- Interior condition, upgrades, and seller motivation can materially affect value
 
-✅ What EstateIQ Does
+### 3. Market-Relative Language
 
-EstateIQ analyzes:
+We frame pricing as **relative to market data**, not absolute judgments:
+- "Above typical range" vs "Overpriced"
+- "Below recent averages" vs "Underpriced"
+- "Aligned with comparable sales" vs "Fairly priced"
 
-Price relative to recent comparable sales
+---
 
-Price-per-square-foot vs local norms
+## Technical Architecture
 
-Market positioning (aligned / aggressive / conservative)
+### Stack
+- **Backend**: Python Flask
+- **Frontend**: Vanilla HTML/CSS/JavaScript
+- **AI**: OpenAI GPT-4o-mini
+- **Deployment**: Render
 
-Buyer and seller leverage implications
+### APIs
+- **US Real Estate API** (RapidAPI): Comparable sales data
+- **Realtor16 API** (RapidAPI): Property listings
+- **OpenAI API**: AI-powered market analysis
 
-Local market trends and context
+### Key Features
+- Real-time property listings for Conejo Valley Area
+- Comparable sales analysis with market metrics
+- AI assistant with liability-safe language framework
+- Email capture gates (5 properties, 3 AI questions)
+- Activity tracking and lead management
 
-EstateIQ helps users:
+---
 
-Understand risk and tradeoffs
-
-Frame decisions responsibly
-
-Prepare for conversations with agents, sellers, or buyers
-
-🚫 What EstateIQ Does NOT Do
-
-EstateIQ does not:
-
-Judge interior condition or build quality
-
-Guarantee value or outcomes
-
-Recommend buying or avoiding a property
-
-Predict appreciation or future prices
-
-Replace inspections or professional advice
-
-⚖️ Opinionated Intelligence with Guardrails
-
-Neutral AI feels unhelpful.
-Absolute AI creates liability.
-
-EstateIQ provides opinionated, market-relative analysis with explicit assumptions.
-
-Prohibited Language
-
-EstateIQ must never state:
-
-“This is a good buy”
-
-“This is a bad deal”
-
-“This home is overpriced”
-
-“You should buy / avoid this property”
-
-These imply certainty and full knowledge EstateIQ does not have.
-
-🗣️ Approved Market Language
-
-EstateIQ uses conditional, market-relative phrasing, such as:
-
-“Priced above the typical range for similar homes”
-
-“Positioned at the higher end of recent comparable sales”
-
-“This price assumes strong condition or unique features”
-
-“From a buyer perspective, this pricing limits leverage”
-
-📌 Required Assumptions
-
-All EstateIQ analysis:
-
-Uses publicly available market data
-
-Assumes average interior condition
-
-Standard assumption statement:
-
-“This analysis is based on publicly available market data and assumes average condition. Interior condition, upgrades, and seller motivation can materially affect value.”
-
-🏗️ Handling Condition Uncertainty
-
-EstateIQ never infers interior condition.
-
-Instead, it:
-
-Treats condition as a variable
-
-Explains how condition impacts pricing
-
-Quantifies when appropriate
-
-Example:
-
-“In this price range, condition typically explains price differences of approximately 5–15%.”
-
-🧩 Standard Analysis Structure
-
-All EstateIQ responses follow this structure:
-
-Market signal (price positioning)
-
-Assumptions stated
-
-Interpretation (buyer/seller leverage)
-
-Suggested next steps for validation
-
-🔗 Relationship to IDX
-
-IDX remains the primary inventory browsing experience
-
-EstateIQ provides interpretation and context
-
-EstateIQ complements IDX—it does not replace it
-
-🛠️ Tech Stack
-Frontend
-
-React
-
-Vanilla JavaScript
-
-CSS3
-
-Responsive, mobile-first design
-
-Backend
-
-Flask
-
-SQLite (PostgreSQL-ready)
-
-OpenAI API (LLM-based analysis)
-
-RentCast API (property & market data)
-
-🚀 Quick Start
-
-(Setup instructions unchanged — safe to keep as-is)
-
-🧪 Definition of “Smart”
-
-EstateIQ is smart when it:
-
-Names uncertainty clearly
-
-Explains tradeoffs honestly
-
-Frames risk and leverage responsibly
-
-Helps users decide what to validate next
-
-Smart ≠ certainty.
-Smart = experienced judgment with restraint.
-
-🎯 Completion Criteria
-
-EstateIQ is complete when:
-
-It feels confident, not neutral
-
-It avoids absolute claims
-
-It consistently frames market context
-
-It builds trust through transparency
-
-Further refinement beyond this point should stop.
-
-📜 License
-
-MIT License
-
-⭐ Internal Product Definition
-
-“EstateIQ helps users understand what the market is actually saying—before they act—using opinionated, data-backed price intelligence with clear assumptions.”
+## Geographic Coverage
+
+**Conejo Valley Area** includes:
+- Westlake Village
+- Thousand Oaks
+- Agoura Hills
+- Newbury Park
+- Oak Park
+- Moorpark
+- Simi Valley
+- Calabasas
+- Lake Sherwood
+- Hidden Valley
+
+---
+
+## Environment Variables
+
+```bash
+# Required
+OPENAI_API_KEY=your_openai_api_key
+US_REALESTATE_KEY=your_rapidapi_key
+RAPIDAPI_KEY=your_rapidapi_key
+
+# Optional
+PORT=5000
+```
+
+---
+
+## Local Development
+
+### Prerequisites
+- Python 3.11+
+- pip
+
+### Setup
+
+```bash
+# Clone repository
+git clone https://github.com/RD1150/estateiq.git
+cd estateiq
+
+# Install dependencies
+pip install flask flask-cors openai requests
+
+# Set environment variables
+export OPENAI_API_KEY=your_key
+export US_REALESTATE_KEY=your_key
+export RAPIDAPI_KEY=your_key
+
+# Run application
+python app.py
+```
+
+Visit `http://localhost:5000`
+
+---
+
+## API Endpoints
+
+### `GET /api/properties`
+Fetch property listings for Conejo Valley Area
+
+**Query Parameters:**
+- `location` (optional): Search location (default: "Conejo Valley Area, CA")
+- `limit` (optional): Number of results (default: 20)
+
+**Response:**
+```json
+[
+  {
+    "id": "property_id",
+    "address": "123 Main St",
+    "city": "Westlake Village",
+    "state": "CA",
+    "zip_code": "91361",
+    "price": 1250000,
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "square_feet": 2800,
+    "photo_url": "https://..."
+  }
+]
+```
+
+### `POST /api/analyze-pricing`
+Analyze property pricing with comparable sales
+
+**Request Body:**
+```json
+{
+  "property": {
+    "address": "123 Main St",
+    "city": "Westlake Village",
+    "zip_code": "91361",
+    "price": 1250000,
+    "square_feet": 2800,
+    "bedrooms": 4,
+    "bathrooms": 3
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "analysis": "Market analysis text with liability-safe language...",
+  "metrics": {
+    "median_sold_price": 1180000,
+    "avg_price_per_sqft": 425,
+    "subject_price_per_sqft": 446,
+    "avg_days_on_market": 45,
+    "comp_count": 18,
+    "price_diff_pct": 5.9
+  },
+  "comp_count": 18
+}
+```
+
+### `POST /api/chat`
+AI-powered market intelligence assistant
+
+**Request Body:**
+```json
+{
+  "messages": [
+    {"role": "user", "content": "How does this property compare?"}
+  ],
+  "property": {
+    "address": "123 Main St",
+    "city": "Westlake Village",
+    "price": 1250000
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Based on recent comparable sales..."
+}
+```
+
+### `POST /api/capture-lead`
+Capture user email for lead generation
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "session_id": "unique_session_id",
+  "source": "email_gate"
+}
+```
+
+### `POST /api/track-activity`
+Track user activity for analytics
+
+**Request Body:**
+```json
+{
+  "session_id": "unique_session_id",
+  "activity_type": "pricing_analysis",
+  "property_id": "property_id"
+}
+```
+
+---
+
+## AI System Prompt
+
+EstateIQ uses a carefully crafted system prompt that enforces:
+
+1. **No absolute judgments** about property value
+2. **Market-relative comparisons** based on data
+3. **Clear assumption disclosures** about condition
+4. **Professional, analytical tone** without hype
+5. **Liability safeguards** for investment advice
+
+See `app.py` for the complete system prompt.
+
+---
+
+## Design Philosophy
+
+**Inspiration**: Hybrid of Compass and Redfin
+- Clean, sophisticated layouts (Compass)
+- Accessible, data-driven approach (Redfin)
+- Professional typography and spacing
+- High-resolution property images
+- Minimal, purposeful UI elements
+
+---
+
+## Database Schema
+
+### `leads` table
+```sql
+CREATE TABLE leads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    session_id TEXT,
+    source TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### `activity` table
+```sql
+CREATE TABLE activity (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    activity_type TEXT NOT NULL,
+    property_id TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## Deployment
+
+### Render Configuration
+
+**Build Command:**
+```bash
+pip install -r requirements.txt
+```
+
+**Start Command:**
+```bash
+python app.py
+```
+
+**Environment Variables:**
+- `OPENAI_API_KEY`
+- `US_REALESTATE_KEY`
+- `RAPIDAPI_KEY`
+- `PORT` (auto-set by Render)
+
+---
+
+## Success Criteria
+
+EstateIQ is successful when:
+
+✅ It feels confident, not neutral  
+✅ It explains price positioning clearly  
+✅ It acknowledges uncertainty honestly  
+✅ It helps users ask better questions  
+✅ It does not make promises or absolute judgments  
+
+---
+
+## Product Definition
+
+> "EstateIQ helps users understand what the market is actually saying—before they act—using opinionated, data-backed price intelligence with clear assumptions."
+
+---
+
+## Relationship to IDX
+
+**IDX** = What's available  
+**EstateIQ** = What it means
+
+EstateIQ is designed to live **before, around, or alongside IDX**—never to replace it. IDX remains the primary inventory browsing experience, while EstateIQ provides market interpretation and decision confidence.
+
+---
+
+## What EstateIQ Evaluates
+
+✅ **Does assess:**
+- Price relative to comps
+- Price per square foot vs norms
+- Market positioning
+- Risk and leverage implications
+
+❌ **Does NOT assess:**
+- Interior condition
+- Build quality
+- Renovation level
+- Seller motivation
+
+---
+
+## License
+
+Proprietary - All rights reserved
+
+---
+
+## Contact
+
+For questions or support, contact: sold@reenadutta.com
+
+---
+
+## Acknowledgments
+
+Built with:
+- OpenAI GPT-4o-mini
+- US Real Estate API (RapidAPI)
+- Realtor16 API (RapidAPI)
+- Flask & Python
+- Deployed on Render
