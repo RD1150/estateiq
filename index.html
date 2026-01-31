@@ -283,6 +283,57 @@
             line-height: 1.6;
             color: var(--color-text-primary);
             white-space: pre-wrap;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .ai-disclaimer {
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--color-text-secondary);
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--color-border);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* Perspective Selector */
+        .perspective-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: var(--color-background);
+            border-radius: 8px;
+        }
+
+        .perspective-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .perspective-btn {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid var(--color-border);
+            background: var(--color-white);
+            color: var(--color-text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-family);
+        }
+
+        .perspective-btn:hover {
+            border-color: var(--color-accent-gold);
+            color: var(--color-text-primary);
+        }
+
+        .perspective-btn.active {
+            background: var(--color-accent-gold);
+            border-color: var(--color-accent-gold);
+            color: var(--color-white);
         }
 
         /* Loading States */
@@ -595,13 +646,20 @@
                                 <div class="property-detail">🛁 ${property.bathrooms || 'N/A'} baths</div>
                                 <div class="property-detail">📐 ${property.square_feet ? property.square_feet.toLocaleString() : 'N/A'} sqft</div>
                             </div>
+                            <div class="perspective-selector" id="perspective-${index}">
+                                <span class="perspective-label">Analyze as:</span>
+                                <button class="perspective-btn active" data-perspective="buyer" onclick="selectPerspective(event, ${index}, 'buyer')">Buyer</button>
+                                <button class="perspective-btn" data-perspective="seller" onclick="selectPerspective(event, ${index}, 'seller')">Seller</button>
+                                <button class="perspective-btn" data-perspective="investor" onclick="selectPerspective(event, ${index}, 'investor')">Investor</button>
+                            </div>
                             <div class="ai-prompts">
-                                <button class="ai-prompt-btn" onclick="analyzePricing(event, ${index})">Is this overpriced?</button>
+                                <button class="ai-prompt-btn" onclick="analyzePricing(event, ${index})">Analyze Pricing</button>
                                 <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'compare')">Compare to nearby</button>
                                 <button class="ai-prompt-btn" onclick="askAI(event, ${index}, 'neighborhood')">About neighborhood</button>
                             </div>
                             <div class="ai-response" id="ai-response-${index}">
                                 <div class="ai-response-text" id="ai-response-text-${index}"></div>
+                                <div class="ai-disclaimer">EstateIQ provides informational, data-based insights using publicly available information. It does not assess property condition, guarantee outcomes, or replace professional advice. Final decisions should be made with licensed real estate and financial professionals.</div>
                             </div>
                         </div>
                     </div>
@@ -686,6 +744,27 @@
             }
         }
 
+        // Select perspective (Buyer/Seller/Investor)
+        function selectPerspective(event, propertyIndex, perspective) {
+            event.stopPropagation();
+            
+            // Update button states
+            const perspectiveDiv = document.getElementById(`perspective-${propertyIndex}`);
+            const buttons = perspectiveDiv.querySelectorAll('.perspective-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.perspective === perspective) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Store selected perspective
+            if (!window.propertyPerspectives) {
+                window.propertyPerspectives = {};
+            }
+            window.propertyPerspectives[propertyIndex] = perspective;
+        }
+
         // Ask AI about property (for other questions)
         async function askAI(event, propertyIndex, questionType) {
             event.stopPropagation();
@@ -703,6 +782,9 @@
             const property = currentProperties[propertyIndex];
             const responseDiv = document.getElementById(`ai-response-${propertyIndex}`);
             const responseText = document.getElementById(`ai-response-text-${propertyIndex}`);
+            
+            // Get selected perspective (default to buyer)
+            const perspective = (window.propertyPerspectives && window.propertyPerspectives[propertyIndex]) || 'buyer';
             
             responseDiv.classList.add('active');
             responseText.textContent = 'Analyzing property data...';
@@ -725,7 +807,8 @@
                         messages: [
                             {role: 'user', content: question}
                         ],
-                        property: property
+                        property: property,
+                        perspective: perspective
                     })
                 });
                 

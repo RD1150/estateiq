@@ -102,6 +102,74 @@ If a user requests advice that exceeds these boundaries, politely reframe the re
 
 Reminder: Always prioritize neutrality, data transparency, and disclaimers. Never provide absolute conclusions or personalized financial advice."""
 
+# ===== PERSPECTIVE PROMPT TEMPLATES =====
+
+BUYER_PROMPT_TEMPLATE = """Analyze this property using available market data.
+
+Compare the price to recent comparable sales in the same area.
+Explain how the price per square foot compares to local averages.
+Identify whether the pricing appears above, below, or within typical market ranges based on available data.
+
+Clearly state any assumptions or limitations due to missing information.
+Do not assess property condition or unseen features.
+
+Note: This analysis is based on publicly available data and does not account for interior condition, upgrades, or inspection findings."""
+
+SELLER_PROMPT_TEMPLATE = """Evaluate this property's current list price relative to recent comparable sales.
+
+Explain how the price aligns with recent market activity.
+Highlight how similar homes have been priced and sold.
+Indicate whether the price appears competitively positioned based on available data only.
+
+Include disclaimers about condition, upgrades, and factors not visible in public records.
+
+Note: This analysis is based on publicly available data and does not account for interior condition, upgrades, or inspection findings."""
+
+INVESTOR_PROMPT_TEMPLATE = """Provide a data-driven investment overview of this property.
+
+Analyze pricing relative to comparable sales and market averages.
+Discuss potential rent ranges or yield scenarios if rental data is available.
+Frame all insights as scenario-based and data-informed, not guaranteed outcomes.
+
+Avoid definitive investment recommendations or profitability claims.
+
+Note: This analysis is based on publicly available data and does not account for interior condition, upgrades, or inspection findings."""
+
+# ===== MARKET ALIGNMENT SCORING RUBRIC =====
+
+SCORING_RUBRIC = {
+    'description': 'Market Alignment Score (1-10)',
+    'scale': {
+        10: 'Exceptionally aligned with recent comparable sales (rare)',
+        9: 'Strong alignment with recent market data',
+        8: 'Strong alignment with recent market data',
+        7: 'Within typical market range',
+        6: 'Within typical market range',
+        5: 'Moderately above or below market norms',
+        4: 'Moderately above or below market norms',
+        3: 'Significantly misaligned with recent comparable data',
+        2: 'Significantly misaligned with recent comparable data',
+        1: 'Extreme deviation from market norms'
+    },
+    'required_language': [
+        'Based on recent comparable sales…',
+        'Relative to similar homes in this area…',
+        'Assuming comparable condition…',
+        'This score reflects market alignment, not property condition.'
+    ],
+    'forbidden_language': [
+        'This is a bad deal',
+        'This is overpriced (without context)',
+        'You should / should not buy',
+        'Guaranteed return',
+        'Fair value'
+    ]
+}
+
+# ===== UI DISCLAIMER =====
+
+UI_DISCLAIMER = """EstateIQ provides informational, data-based insights using publicly available information. It does not assess property condition, guarantee outcomes, or replace professional advice. Final decisions should be made with licensed real estate and financial professionals."""
+
 # ===== US REAL ESTATE API INTEGRATION =====
 
 def get_sold_homes_by_zipcode(zipcode: str, limit: int = 20) -> List[Dict]:
@@ -181,13 +249,32 @@ def calculate_market_metrics(sold_homes: List[Dict], subject_property: Dict) -> 
         subject_price_per_sqft = subject_price / subject_sqft if subject_sqft > 0 else 0
         
         # Calculate medians and averages
+        price_diff_pct = ((subject_price - statistics.median(sold_prices)) / statistics.median(sold_prices) * 100) if sold_prices else 0
+        
+        # Calculate Market Alignment Score (1-10)
+        # Based on how closely the price aligns with recent comparable sales
+        abs_diff = abs(price_diff_pct)
+        if abs_diff <= 2:
+            market_score = 10  # Exceptionally aligned
+        elif abs_diff <= 5:
+            market_score = 8 if abs_diff <= 3 else 7  # Strong alignment / Within typical range
+        elif abs_diff <= 10:
+            market_score = 6  # Within typical market range
+        elif abs_diff <= 15:
+            market_score = 5 if abs_diff <= 12 else 4  # Moderately misaligned
+        elif abs_diff <= 25:
+            market_score = 3 if abs_diff <= 20 else 2  # Significantly misaligned
+        else:
+            market_score = 1  # Extreme deviation
+        
         metrics = {
             'median_sold_price': int(statistics.median(sold_prices)) if sold_prices else 0,
             'avg_price_per_sqft': int(statistics.mean(price_per_sqft_list)) if price_per_sqft_list else 0,
             'subject_price_per_sqft': int(subject_price_per_sqft),
             'avg_days_on_market': int(statistics.mean(days_on_market_list)) if days_on_market_list else 0,
             'comp_count': len(sold_homes),
-            'price_diff_pct': ((subject_price - statistics.median(sold_prices)) / statistics.median(sold_prices) * 100) if sold_prices else 0
+            'price_diff_pct': price_diff_pct,
+            'market_alignment_score': market_score
         }
         
         return metrics
@@ -217,6 +304,10 @@ def generate_pricing_analysis(property_data: Dict, market_metrics: Dict) -> str:
     avg_dom = market_metrics.get('avg_days_on_market', 0)
     comp_count = market_metrics.get('comp_count', 0)
     price_diff_pct = market_metrics.get('price_diff_pct', 0)
+    market_score = market_metrics.get('market_alignment_score', 5)
+    
+    # Get score description
+    score_description = SCORING_RUBRIC['scale'].get(market_score, 'Within typical market range')
     
     # Calculate valuation range (±5-7% of median to reflect condition variance)
     estimated_low = int(median_sold * 0.93)
@@ -249,13 +340,18 @@ def generate_pricing_analysis(property_data: Dict, market_metrics: Dict) -> str:
 {city}, {state} {zip_code}
 List Price: ${list_price:,} | {beds} beds, {baths} baths, {sqft:,} sqft
 
+**Market Alignment Score: {market_score}/10**
+{score_description}
+
+Based on recent comparable sales, this score reflects how closely the asking price aligns with recent market activity. This score reflects market alignment, not property condition.
+
 **Price Positioning**
 Based on {comp_count} recent comparable sales in {zip_code}:
 • Median sold price: ${median_sold:,}
 • Typical $/sqft range: ${avg_price_sqft}
 • Subject property $/sqft: ${subject_price_sqft}
 
-This listing is priced {position} for similar homes in this area, {positioning_detail}.
+Relative to similar homes in this area, this listing is priced {position}, {positioning_detail}.
 
 **Market Context**
 {market_context}
@@ -442,14 +538,23 @@ def analyze_pricing():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    """AI chat endpoint with liability-safe intelligence"""
+    """AI chat endpoint with liability-safe intelligence and perspective support"""
     try:
         data = request.json
         messages = data.get('messages', [])
         property_context = data.get('property', None)
+        perspective = data.get('perspective', 'buyer')  # buyer, seller, or investor
         
         # Build system prompt with property context
         system_prompt = ESTATEIQ_SYSTEM_PROMPT
+        
+        # Add perspective-specific prompt template
+        if perspective == 'seller':
+            system_prompt += f"\n\n{SELLER_PROMPT_TEMPLATE}"
+        elif perspective == 'investor':
+            system_prompt += f"\n\n{INVESTOR_PROMPT_TEMPLATE}"
+        else:  # default to buyer
+            system_prompt += f"\n\n{BUYER_PROMPT_TEMPLATE}"
         
         # Add property context if available
         if property_context:
